@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Labb4_Quiz
 {
@@ -12,9 +13,7 @@ namespace Labb4_Quiz
             quizContext = new QuizContext();
 
             quizContext.Database.EnsureDeleted();
-            var isCreated = quizContext.Database.EnsureCreated();
-            //var connected = quizContext.Database.CanConnect();
-            //Console.WriteLine($"can connect {connected} and is created {isCreated}");
+            quizContext.Database.EnsureCreated();
 
             RegisterAdmins();
             LoadQuestions();
@@ -27,7 +26,7 @@ namespace Labb4_Quiz
 
         private static void RegisterAdmins()
         {
-            var admin1= new User
+            var admin1 = new User
             {
                 UserId = 1,
                 Name = "Tijana",
@@ -50,7 +49,23 @@ namespace Labb4_Quiz
 
         private static void StartPage()
         {
-            Console.WriteLine("Welcome, hello kitty, nice to see you bla bla bla...");
+            Console.WriteLine("Welcome, hello kitty, nice to see you bla bla bla.. Enter your username");
+            string userNameInput = Console.ReadLine();
+            List<int> userIdList = new List<int>();
+            foreach (var item in quizContext.Users)
+            {
+                userIdList.Add(item.UserId);
+            }
+            var counter = userIdList.Count() + 1;
+            Console.WriteLine(counter);
+
+            var newUser = new User
+            {
+                UserId = counter,
+                Name = userNameInput
+
+            };
+
         }
 
         private static void LoadQuestions()
@@ -129,20 +144,6 @@ namespace Labb4_Quiz
                 quizContext.SaveChanges();
             }
 
-            //var quiz2 = new Quiz
-            //{
-            //    Questions = new List<Question> {
-            //    new Question {
-            //        QuestionContent = "what is your name?",
-            //        Answers= new List<Answer> {
-            //            new Answer { AnswerContent="i don't know", IsCorrect=true},
-            //            new Answer { AnswerContent="i don't know2", IsCorrect=false},
-            //            new Answer { AnswerContent="i don't know3", IsCorrect=false},
-            //            new Answer { AnswerContent="i don't know4", IsCorrect=false}
-            //        } } }
-            //};
-            //quizContext.Quizzes.Add(quiz2);
-            //quizContext.SaveChanges();
         }
     }
 }
