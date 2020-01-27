@@ -8,20 +8,22 @@ namespace Labb4_Quiz
     {
         static void Main(string[] args)
         {
+
             var quizContext = new QuizContext();
+            quizContext.Database.EnsureDeleted();
             var isCreated = quizContext.Database.EnsureCreated();
             var connected = quizContext.Database.CanConnect();
             Console.WriteLine($"can connect {connected} and is created {isCreated}");
-            var quiz = new Quiz
+            var quiz2 = new Quiz
             {
                 Questions = new List<Question> {
                 new Question {
-                    QuestionContent = "mama",
+                    QuestionContent = "what is your name?",
                     Answers= new List<Answer> {
-                        new Answer { AnswerContent="yes"}
+                        new Answer { AnswerContent="i don't know", IsCorrect=false}
                     } } }
             };
-            quizContext.Quizzes.Add(quiz);
+            quizContext.Quizzes.Add(quiz2);
             quizContext.SaveChanges();
             foreach (var item in quizContext.Questions.ToList())
             {

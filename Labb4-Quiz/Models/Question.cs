@@ -7,8 +7,9 @@ namespace Labb4_Quiz
     public class Question
     {
         [Key]
-        public int QuestionID { get; set; }
+        public int QuestionId { get; set; }
         public string QuestionContent { get; set; }
+        public bool IsApproved { get; set; }
         [ForeignKey("QuizId")]
         public int QuizId { get; set; }
         public virtual Quiz Quiz { get; set; }
