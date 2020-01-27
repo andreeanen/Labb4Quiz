@@ -12,7 +12,7 @@ namespace Labb4_Quiz
         public bool IsApproved { get; set; }
         //[ForeignKey("QuizId")]
         //public int QuizId { get; set; }
-        public virtual Quiz Quiz { get; set; }
+       // public virtual Quiz Quiz { get; set; }
         public virtual IList<Answer> Answers { get; set; }
 
     }

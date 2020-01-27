@@ -14,8 +14,8 @@ namespace Labb4_Quiz
 
             quizContext.Database.EnsureDeleted();
             var isCreated = quizContext.Database.EnsureCreated();
-            var connected = quizContext.Database.CanConnect();
-            Console.WriteLine($"can connect {connected} and is created {isCreated}");
+            //var connected = quizContext.Database.CanConnect();
+            //Console.WriteLine($"can connect {connected} and is created {isCreated}");
 
             LoadQuestions();
 
@@ -83,14 +83,16 @@ namespace Labb4_Quiz
             {
                 var question = new Question
                 {
+                    QuestionId = i + 1,
                     QuestionContent = questions[i],
                     Answers = new List<Answer>
                     {
-                        new Answer { AnswerContent = correctAnswers[i], IsCorrect = true },
-                        new Answer { AnswerContent = incorrectAnswers1[i], IsCorrect = false },
-                        new Answer { AnswerContent = incorrectAnswers2[i], IsCorrect = false },
-                        new Answer { AnswerContent = incorrectAnswers3[i], IsCorrect = false },
-                    }
+                        new Answer { AnswerId = 4 * i + 1, AnswerContent = correctAnswers[i], IsCorrect = true },
+                        new Answer { AnswerId = 4 * i + 2, AnswerContent = incorrectAnswers1[i], IsCorrect = false },
+                        new Answer { AnswerId = 4 * i + 3, AnswerContent = incorrectAnswers2[i], IsCorrect = false },
+                        new Answer { AnswerId = 4 * i + 4, AnswerContent = incorrectAnswers3[i], IsCorrect = false },
+                    },
+                    IsApproved = true
                 };
                 quizContext.Questions.Add(question);
                 quizContext.SaveChanges();
