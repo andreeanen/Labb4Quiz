@@ -18,7 +18,7 @@ namespace Labb4_Quiz
         //}
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Data Source=localhost;Initial Catalog=Quizzzz;Integrated Security=True;Pooling=False");
+            optionsBuilder.UseSqlServer(@"Data Source=localhost;Initial Catalog=LeQuiz;Integrated Security=True;Pooling=False");
             optionsBuilder.UseLazyLoadingProxies();
 
         }
