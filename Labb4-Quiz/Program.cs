@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Labb4_Quiz
 {
@@ -17,9 +16,41 @@ namespace Labb4_Quiz
             //var connected = quizContext.Database.CanConnect();
             //Console.WriteLine($"can connect {connected} and is created {isCreated}");
 
+            RegisterAdmins();
             LoadQuestions();
 
+            StartPage();
+
+            Console.WriteLine("Press any key to close the application...");
             Console.ReadKey(true);
+        }
+
+        private static void RegisterAdmins()
+        {
+            var admin1= new User
+            {
+                UserId = 1,
+                Name = "Tijana",
+                Password = "AVerySecurePassword!",
+                UserStatus = UserStatus.Admin
+            };
+
+            var admin2 = new User
+            {
+                UserId = 2,
+                Name = "Andreea",
+                Password = "AnotherVerySecurePassword!",
+                UserStatus = UserStatus.Admin
+            };
+
+            quizContext.Users.Add(admin1);
+            quizContext.Users.Add(admin2);
+            quizContext.SaveChanges();
+        }
+
+        private static void StartPage()
+        {
+            Console.WriteLine("Welcome, hello kitty, nice to see you bla bla bla...");
         }
 
         private static void LoadQuestions()

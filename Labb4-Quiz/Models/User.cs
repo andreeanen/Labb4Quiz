@@ -11,8 +11,8 @@ namespace Labb4_Quiz
         public string Password { get; set; }
         public int Score { get; set; }
         public UserStatus UserStatus { get; set; }
-        [ForeignKey("QuizId")]
-        public int QuizId { get; set; }
-        public virtual Quiz Quiz { get; set; }
+        //[ForeignKey("QuizId")]
+        //public int QuizId { get; set; }
+        //public virtual Quiz Quiz { get; set; }
     }
 }
