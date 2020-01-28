@@ -27,7 +27,46 @@ namespace Labb4_Quiz
 
         private static void PrintMenu()
         {
+            //Console.WriteLine("Choose what you would like to do by typing the number in front of the option." +
+            //                  "\n1.Play a quiz" +
+            //                  "\n2.Add a new question to the quiz" +
+            //                  "\n3.Quit");
+            //string userInput = Console.ReadLine();
+            bool isInputValid = false;
+            while (!isInputValid)
+            {
+                Console.WriteLine("Choose what you would like to do by typing the number in front of the option." +
+                              "\n1.Play a quiz" +
+                              "\n2.Add a new question to the quiz" +
+                              "\n3.Quit");
+                string userInput = Console.ReadLine();
+                switch (userInput)
+                {
+                    case "1":
+                        PlayQuiz();
+                        isInputValid = true;
+                        break;
+                    case "2":
+                        AddNewQuestionFromUser();
+                        isInputValid = true;
+                        break;
+                    case "3":
+                        break;
+                    default:
+                        Console.WriteLine("Your input is incorrect! Please try again..");
+                        break;
+                }
+            }
+        }
 
+        private static void AddNewQuestionFromUser()
+        {
+            throw new NotImplementedException();
+        }
+
+        private static void PlayQuiz()
+        {
+            Console.WriteLine("The quiz starts right now. Good luck!");
         }
 
         private static void RegisterAdmins()
@@ -63,7 +102,6 @@ namespace Labb4_Quiz
                 userIdList.Add(item.UserId);
             }
             var counterUserID = userIdList.Count() + 1;
-            Console.WriteLine(counterUserID);
 
             var newUser = new User
             {
