@@ -18,14 +18,14 @@ namespace Labb4_Quiz
             RegisterAdmins();
             LoadQuestions();
 
-            StartPage();
-            PrintMenu();
+            User currentUser = StartPage();
+            PrintMenu(currentUser);
 
             Console.WriteLine("Press any key to close the application...");
             Console.ReadKey(true);
         }
 
-        private static void PrintMenu()
+        private static void PrintMenu(User currentUser)
         {
             bool isInputValid = false;
             while (!isInputValid)
@@ -38,7 +38,7 @@ namespace Labb4_Quiz
                 switch (userInput)
                 {
                     case "1":
-                        PlayQuiz();
+                        PlayQuiz(currentUser);
                         isInputValid = true;
                         break;
                     case "2":
@@ -105,7 +105,7 @@ namespace Labb4_Quiz
 
         }
 
-        private static void PlayQuiz()
+        private static void PlayQuiz(User currentUser)
         {
             int numberOfQuestions = 10;
             Console.WriteLine("The quiz starts right now. Good luck!");
@@ -145,6 +145,8 @@ namespace Labb4_Quiz
             quizContext.Quizzes.Add(newQuiz);
             quizContext.SaveChanges();
 
+            int currentScore = 0;
+
             foreach (var question in quizContext.Quizzes.ToList().Last().Questions)
             {
                 Console.WriteLine($"\n{question.QuestionContent}");
@@ -176,22 +178,22 @@ namespace Labb4_Quiz
 
                 Console.Write("What is the correct answer?\nEnter A, B, C or D: ");
                 string usersAnswer = Console.ReadLine().Trim().ToUpper();
-
                 if (usersAnswer == correctAnswer)
                 {
                     Console.WriteLine("\nCorrect");
+                    currentScore++;
                 }
                 else
                 {
                     Console.WriteLine("\nIncorrect, correct answer is: " + correctAnswer);
                 }
-               
 
-                // Metod som tar användarens inmatning
-                // Metod som validerar användarens inmatning
-                // Räkna score
+                Console.WriteLine("Current score: " + currentScore);
+
+                currentUser.Score = currentScore;
+                quizContext.Users.Update(currentUser);
+                quizContext.SaveChanges();
             }
-            // uppdatera score i users list
         }
 
         private static void RegisterAdmins()
@@ -216,7 +218,7 @@ namespace Labb4_Quiz
             quizContext.SaveChanges();
         }
 
-        private static void StartPage()
+        private static User StartPage()
         {
             Console.WriteLine("Welcome to play the best quiz of the year!" +
                               "\nPlease enter your username:");
@@ -238,6 +240,7 @@ namespace Labb4_Quiz
             quizContext.Users.Add(newUser);
             quizContext.SaveChanges();
 
+            return newUser;
         }
 
         private static void LoadQuestions()
