@@ -115,7 +115,10 @@ namespace Labb4_Quiz
 
             foreach (var question in quizContext.Questions)
             {
-                questionIdList.Add(question.QuestionId);
+                if (question.IsApproved)
+                {
+                    questionIdList.Add(question.QuestionId);
+                }               
             }
             
             List<int> random10Questions = new List<int>();
