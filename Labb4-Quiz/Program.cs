@@ -107,6 +107,7 @@ namespace Labb4_Quiz
 
         private static void PlayQuiz()
         {
+            int numberOfQuestions = 10;
             Console.WriteLine("The quiz starts right now. Good luck!");
 
             Quiz newQuiz = new Quiz { QuizId = 1 , Questions = new List<Question>() };  // TODO: Fix QuizId
@@ -118,7 +119,7 @@ namespace Labb4_Quiz
             }
             
             List<int> random10Questions = new List<int>();
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < numberOfQuestions; i++)
             {
                 int randomId = random.Next(1, questionIdList.Count + 1);
                 if (!random10Questions.Contains(randomId))
@@ -131,22 +132,43 @@ namespace Labb4_Quiz
                 }
             }
 
-            foreach (var item in random10Questions)
+            foreach (var randomQuestion in random10Questions)
             {
-                foreach (var item2 in quizContext.Questions)
+                foreach (var question in quizContext.Questions)
                 {
-                    if (item2.QuestionId == item)
+                    if (question.QuestionId == randomQuestion)
                     {
-                        newQuiz.Questions.Add(item2);                        
+                        newQuiz.Questions.Add(question);                        
                     }
                 }
             }
             quizContext.Quizzes.Add(newQuiz);
             quizContext.SaveChanges();
 
-            foreach (var item in quizContext.Quizzes.ToList().Last().Questions)
+            foreach (var question in quizContext.Quizzes.ToList().Last().Questions)
             {
-                Console.WriteLine(item.QuestionContent);
+                Console.WriteLine(question.QuestionContent);
+
+                List<int> randomQuestionOrder = new List<int>();
+                for (int i = 0; i < 4; i++)
+                {
+                    int randomAnswerIndex = random.Next(0, 4);
+                    if (!randomQuestionOrder.Contains(randomAnswerIndex))
+                    {
+                        randomQuestionOrder.Add(randomAnswerIndex);
+                    }
+                    else
+                    {
+                        i--;
+                    }
+                }
+
+                List<char> abcd = new List<char> { 'A', 'B', 'C', 'D' };
+                for (int i = 0; i < 4; i++)
+                {
+                    Console.WriteLine($"{abcd[i]} - {question.Answers[randomQuestionOrder[i]].AnswerContent}");
+                }
+
                 // Metod som skriver ut alla svar i en random följd
                 // Metod som tar användarens inmatning
                 // Metod som validerar användarens inmatning
