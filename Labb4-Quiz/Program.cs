@@ -147,7 +147,7 @@ namespace Labb4_Quiz
 
             foreach (var question in quizContext.Quizzes.ToList().Last().Questions)
             {
-                Console.WriteLine(question.QuestionContent);
+                Console.WriteLine($"\n{question.QuestionContent}");
 
                 List<int> randomQuestionOrder = new List<int>();
                 for (int i = 0; i < 4; i++)
@@ -163,13 +163,30 @@ namespace Labb4_Quiz
                     }
                 }
 
-                List<char> abcd = new List<char> { 'A', 'B', 'C', 'D' };
+                List<string> abcd = new List<string> { "A", "B", "C", "D" };
+                string correctAnswer = string.Empty;
                 for (int i = 0; i < 4; i++)
                 {
                     Console.WriteLine($"{abcd[i]} - {question.Answers[randomQuestionOrder[i]].AnswerContent}");
+                    if (question.Answers[randomQuestionOrder[i]].IsCorrect)
+                    {
+                        correctAnswer = abcd[i];
+                    }
                 }
 
-                // Metod som skriver ut alla svar i en random följd
+                Console.Write("What is the correct answer?\nEnter A, B, C or D: ");
+                string usersAnswer = Console.ReadLine().Trim().ToUpper();
+
+                if (usersAnswer == correctAnswer)
+                {
+                    Console.WriteLine("\nCorrect");
+                }
+                else
+                {
+                    Console.WriteLine("\nIncorrect, correct answer is: " + correctAnswer);
+                }
+               
+
                 // Metod som tar användarens inmatning
                 // Metod som validerar användarens inmatning
                 // Räkna score
