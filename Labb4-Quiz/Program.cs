@@ -19,9 +19,15 @@ namespace Labb4_Quiz
             LoadQuestions();
 
             StartPage();
+            PrintMenu();
 
             Console.WriteLine("Press any key to close the application...");
             Console.ReadKey(true);
+        }
+
+        private static void PrintMenu()
+        {
+
         }
 
         private static void RegisterAdmins()
@@ -41,7 +47,6 @@ namespace Labb4_Quiz
                 Password = "AnotherVerySecurePassword!",
                 UserStatus = UserStatus.Admin
             };
-
             quizContext.Users.Add(admin1);
             quizContext.Users.Add(admin2);
             quizContext.SaveChanges();
@@ -49,22 +54,26 @@ namespace Labb4_Quiz
 
         private static void StartPage()
         {
-            Console.WriteLine("Welcome, hello kitty, nice to see you bla bla bla.. Enter your username");
+            Console.WriteLine("Welcome to play the best quiz of the year!" +
+                              "\nPlease enter your username:");
             string userNameInput = Console.ReadLine();
             List<int> userIdList = new List<int>();
             foreach (var item in quizContext.Users)
             {
                 userIdList.Add(item.UserId);
             }
-            var counter = userIdList.Count() + 1;
-            Console.WriteLine(counter);
+            var counterUserID = userIdList.Count() + 1;
+            Console.WriteLine(counterUserID);
 
             var newUser = new User
             {
-                UserId = counter,
-                Name = userNameInput
-
+                UserId = counterUserID,
+                Name = userNameInput,
+                Score = 0,
+                UserStatus = UserStatus.User
             };
+            quizContext.Users.Add(newUser);
+            quizContext.SaveChanges();
 
         }
 
