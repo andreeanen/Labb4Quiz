@@ -7,7 +7,7 @@ namespace Labb4_Quiz
     class Program
     {
         static QuizContext quizContext;
-
+        static List<int> questionIdList = new List<int>();
         static void Main(string[] args)
         {
             quizContext = new QuizContext();
@@ -27,11 +27,6 @@ namespace Labb4_Quiz
 
         private static void PrintMenu()
         {
-            //Console.WriteLine("Choose what you would like to do by typing the number in front of the option." +
-            //                  "\n1.Play a quiz" +
-            //                  "\n2.Add a new question to the quiz" +
-            //                  "\n3.Quit");
-            //string userInput = Console.ReadLine();
             bool isInputValid = false;
             while (!isInputValid)
             {
@@ -74,7 +69,7 @@ namespace Labb4_Quiz
                               "\nWrong answers:");
                 string wrongAnswers = Console.ReadLine().Trim(' ');
                 var splitAnswers = wrongAnswers.Split(",");
-                List<int> questionIdList = new List<int>();
+                //List<int> questionIdList = new List<int>();
                 foreach (var question in quizContext.Questions)
                 {
                     questionIdList.Add(question.QuestionId);
@@ -113,6 +108,51 @@ namespace Labb4_Quiz
         private static void PlayQuiz()
         {
             Console.WriteLine("The quiz starts right now. Good luck!");
+
+            Quiz newQuiz = new Quiz { QuizId = 1 , Questions = new List<Question>() };  // TODO: Fix QuizId
+            Random random = new Random();
+
+            foreach (var question in quizContext.Questions)
+            {
+                questionIdList.Add(question.QuestionId);
+            }
+            
+            List<int> random10Questions = new List<int>();
+            for (int i = 0; i < 10; i++)
+            {
+                int randomId = random.Next(1, questionIdList.Count + 1);
+                if (!random10Questions.Contains(randomId))
+                {
+                    random10Questions.Add(randomId);
+                }
+                else
+                {
+                    i--;
+                }
+            }
+
+            foreach (var item in random10Questions)
+            {
+                foreach (var item2 in quizContext.Questions)
+                {
+                    if (item2.QuestionId == item)
+                    {
+                        newQuiz.Questions.Add(item2);                        
+                    }
+                }
+            }
+            quizContext.Quizzes.Add(newQuiz);
+            quizContext.SaveChanges();
+
+            foreach (var item in quizContext.Quizzes.ToList().Last().Questions)
+            {
+                Console.WriteLine(item.QuestionContent);
+                // Metod som skriver ut alla svar i en random följd
+                // Metod som tar användarens inmatning
+                // Metod som validerar användarens inmatning
+                // Räkna score
+            }
+            // uppdatera score i users list
         }
 
         private static void RegisterAdmins()
