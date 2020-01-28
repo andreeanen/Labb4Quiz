@@ -63,26 +63,26 @@ namespace Labb4_Quiz
         {
             Console.WriteLine("Please type the content of your question and then press enter." +
                               "\nQuestion:");
-            string questionContent = Console.ReadLine();
+            string questionContent = Console.ReadLine().Trim(' ');
             Console.WriteLine("Please type the correct answer for the question you wrote before." +
                               "\nCorrect answer:");
-            string correctAnswer = Console.ReadLine();
-            bool isWringAnswersStringCorrect = false;
-            while (!isWringAnswersStringCorrect)
+            string correctAnswer = Console.ReadLine().Trim();
+            bool isWrongAnswersStringCorrect = false;
+            while (!isWrongAnswersStringCorrect)
             {
                 Console.WriteLine("Please type 3 wrong answers for your question and divide them by comma (,)." +
                               "\nWrong answers:");
-                string wrongAnswers = Console.ReadLine();
-                var trimAnswers = wrongAnswers.Split(",");
+                string wrongAnswers = Console.ReadLine().Trim(' ');
+                var splitAnswers = wrongAnswers.Split(",");
                 List<int> questionIdList = new List<int>();
                 foreach (var question in quizContext.Questions)
                 {
                     questionIdList.Add(question.QuestionId);
                 }
                 var counterQuestionId = questionIdList.Count();
-                if (trimAnswers.Length == 3)
+                if ((splitAnswers.Length == 3) && (correctAnswer != splitAnswers[0].Trim()) && (correctAnswer != splitAnswers[1].Trim()) && (correctAnswer != splitAnswers[2].Trim()))
                 {
-                    isWringAnswersStringCorrect = true;
+                    isWrongAnswersStringCorrect = true;
                     var newQuestionsFromUser = new Question
                     {
                         QuestionId = counterQuestionId + 1,
@@ -91,18 +91,20 @@ namespace Labb4_Quiz
                         Answers = new List<Answer>
                     {
                         new Answer { AnswerId = 4 * counterQuestionId + 1, AnswerContent = correctAnswer, IsCorrect = true },
-                        new Answer { AnswerId = 4 * counterQuestionId + 2, AnswerContent = trimAnswers[0], IsCorrect = false },
-                        new Answer { AnswerId = 4 * counterQuestionId + 3, AnswerContent = trimAnswers[1], IsCorrect = false },
-                        new Answer { AnswerId = 4 * counterQuestionId + 4, AnswerContent = trimAnswers[2], IsCorrect = false },
+                        new Answer { AnswerId = 4 * counterQuestionId + 2, AnswerContent = splitAnswers[0], IsCorrect = false },
+                        new Answer { AnswerId = 4 * counterQuestionId + 3, AnswerContent = splitAnswers[1], IsCorrect = false },
+                        new Answer { AnswerId = 4 * counterQuestionId + 4, AnswerContent = splitAnswers[2], IsCorrect = false },
                     }
 
                     };
                     quizContext.Questions.Add(newQuestionsFromUser);
                     quizContext.SaveChanges();
+                    Console.WriteLine("Your question was submited and an administrator will publish it.");
                 }
                 else
                 {
-                    Console.WriteLine("You need to write 3 wrong answers divided by comma (,). Please try again..");
+                    Console.WriteLine("You need to write 3 wrong answers divided by comma (,) that are different from the corect answer." +
+                                      "\nPlease try again..");
                 }
             }
 
