@@ -59,7 +59,12 @@ namespace Labb4_Quiz
         private static void PrintAdminMenu()
         {
             Console.WriteLine("Write your admin name:");
-            string adminName = Console.ReadLine().Trim();
+            string adminName = Console.ReadLine().Trim();   // TODO: validate name: no empty strings, no X etc.
+            if (adminName == "X" || adminName == "x")
+            {
+                Console.WriteLine("Goodbye admin wannabe!");
+                return;
+            }
             Console.WriteLine("Write your admin password:");
             string adminPassword = Console.ReadLine().Trim();
             bool isAdminValid = false;
@@ -77,7 +82,7 @@ namespace Labb4_Quiz
             }
             else
             {
-                Console.WriteLine("Your admin name or password are incorrect. Try again!");
+                Console.WriteLine("Your admin name or password are incorrect.\nTry again or press X to exit!");
                 PrintAdminMenu();
             }
         }
