@@ -7,7 +7,7 @@ namespace Labb4_Quiz
     class Program
     {
         static QuizContext quizContext;
-        static List<int> questionIdList = new List<int>();
+        //static List<int> questionIdList = new List<int>();
         static void Main(string[] args)
         {
             quizContext = new QuizContext();
@@ -95,6 +95,7 @@ namespace Labb4_Quiz
 
         private static void PrintUserMenu(User currentUser)
         {
+            List<int> questionIdList = new List<int>();
             //bool isInputValid = false;
             while (true/*!isInputValid*/)
             {
@@ -106,11 +107,11 @@ namespace Labb4_Quiz
                 switch (userInput)
                 {
                     case "1":
-                        PlayQuiz(currentUser);
+                        PlayQuiz(currentUser, questionIdList);
                         //isInputValid = true;
                         break;
                     case "2":
-                        AddNewQuestionFromUser();
+                        AddNewQuestionFromUser(questionIdList);
                         //isInputValid = true;
                         break;
                     case "3":
@@ -122,7 +123,7 @@ namespace Labb4_Quiz
             }
         }
 
-        private static void AddNewQuestionFromUser()
+        private static void AddNewQuestionFromUser(List<int> questionIdList)
         {
             Console.WriteLine("Please type the content of your question and then press enter." +
                               "\nQuestion:");
@@ -137,7 +138,11 @@ namespace Labb4_Quiz
                               "\nWrong answers:");
                 string wrongAnswers = Console.ReadLine().Trim(' ');
                 var splitAnswers = wrongAnswers.Split(",");
-                //List<int> questionIdList = new List<int>();
+
+                if (questionIdList.Count > 0)
+                {
+                    questionIdList.Clear();
+                }
                 foreach (var question in quizContext.Questions)
                 {
                     questionIdList.Add(question.QuestionId);
@@ -152,12 +157,12 @@ namespace Labb4_Quiz
                         IsApproved = false,
                         QuestionContent = questionContent,
                         Answers = new List<Answer>
-                    {
+                        {
                         new Answer { AnswerId = 4 * numberOfQuestionInDatabase + 1, AnswerContent = correctAnswer, IsCorrect = true },
                         new Answer { AnswerId = 4 * numberOfQuestionInDatabase + 2, AnswerContent = splitAnswers[0], IsCorrect = false },
                         new Answer { AnswerId = 4 * numberOfQuestionInDatabase + 3, AnswerContent = splitAnswers[1], IsCorrect = false },
                         new Answer { AnswerId = 4 * numberOfQuestionInDatabase + 4, AnswerContent = splitAnswers[2], IsCorrect = false },
-                    }
+                        }
 
                     };
                     quizContext.Questions.Add(newQuestionsFromUser);
@@ -170,14 +175,13 @@ namespace Labb4_Quiz
                                       "\nPlease try again..");
                 }
             }
-
         }
 
-        private static void PlayQuiz(User currentUser)
+        private static void PlayQuiz(User currentUser, List<int> questionIdList)
         {
             Console.WriteLine("The quiz starts right now. Good luck!");
 
-            FilterApprovedQuestions();
+            FilterApprovedQuestions(questionIdList);
 
             int numberOfQuestions = 10;
             Random random = new Random();
@@ -227,8 +231,12 @@ namespace Labb4_Quiz
             Console.WriteLine("\nFinal score: " + finalScore);
         }
 
-        private static void FilterApprovedQuestions()
+        private static void FilterApprovedQuestions(List<int> questionIdList)
         {
+            if (questionIdList.Count > 0)
+            {
+                questionIdList.Clear();
+            }
             foreach (var question in quizContext.Questions)
             {
                 if (question.IsApproved)
