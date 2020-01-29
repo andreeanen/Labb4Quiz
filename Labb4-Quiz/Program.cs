@@ -17,77 +17,15 @@ namespace Labb4_Quiz
 
             RegisterAdmins();
             LoadQuestions();
-            PrintMainMenu();
 
-            //User currentUser = StartPage();
-            //PrintMenu(currentUser);
+            User currentUser = StartPage();
+            PrintMenu(currentUser);
 
             Console.WriteLine("Press any key to close the application...");
             Console.ReadKey(true);
         }
 
-        private static void PrintMainMenu()
-        {
-            bool isInputCorrect = false;
-            while (!isInputCorrect)
-            {
-                Console.WriteLine("Hello!\nChoose one option by typing the number in front of it:" +
-                                              "\n1.Log in as a user" +
-                                              "\n2.Log in as an admin" +
-                                              "\n3.Exit application");
-                string input = Console.ReadLine().Trim();
-                switch (input)
-                {
-                    case "1":
-                        User currentUser = StartPageUser();
-                        PrintUserMenu(currentUser);
-                        isInputCorrect = true;
-                        break;
-                    case "2":
-                        PrintAdminMenu();
-                        isInputCorrect = true;
-                        break;
-                    case "3":
-                        return;
-                    default:
-                        Console.WriteLine("Your input is incorrect. Please choose one option by writing the number in front of it.");
-                        break;
-                }
-            }
-        }
-
-        private static void PrintAdminMenu()
-        {
-            Console.WriteLine("Write your admin name:");
-            string adminName = Console.ReadLine().Trim();
-            Console.WriteLine("Write your admin password:");
-            string adminPassword = Console.ReadLine().Trim();
-            bool isAdminValid = false;
-            foreach (var user in quizContext.Users.ToList())
-            {
-                if ((user.Name == adminName) & (user.Password == adminPassword) & (user.UserStatus == UserStatus.Admin))
-                {
-                    isAdminValid = true;
-                    break;
-                }
-            }
-            if (isAdminValid)
-            {
-                ReviewNotApprovedQuestions();
-            }
-            else
-            {
-                Console.WriteLine("Your admin name or password are incorrect. Try again!");
-                PrintAdminMenu();
-            }
-        }
-
-        private static void ReviewNotApprovedQuestions()
-        {
-            Console.WriteLine("hello kitty");
-        }
-
-        private static void PrintUserMenu(User currentUser)
+        private static void PrintMenu(User currentUser)
         {
             bool isInputValid = false;
             while (!isInputValid)
@@ -95,7 +33,7 @@ namespace Labb4_Quiz
                 Console.WriteLine("Choose what you would like to do by typing the number in front of the option." +
                                   "\n1.Play a quiz" +
                                   "\n2.Add a new question to the quiz" +
-                                  "\n3.Exit quiz");
+                                  "\n3.Quit");
                 string userInput = Console.ReadLine();
                 switch (userInput)
                 {
@@ -108,7 +46,7 @@ namespace Labb4_Quiz
                         isInputValid = true;
                         break;
                     case "3":
-                        return;
+                        break;
                     default:
                         Console.WriteLine("Your input is incorrect! Please try again..");
                         break;
@@ -136,21 +74,21 @@ namespace Labb4_Quiz
                 {
                     questionIdList.Add(question.QuestionId);
                 }
-                var numberOfQuestionInDatabase = questionIdList.Count();
+                var counterQuestionId = questionIdList.Count();
                 if ((splitAnswers.Length == 3) && (correctAnswer != splitAnswers[0].Trim()) && (correctAnswer != splitAnswers[1].Trim()) && (correctAnswer != splitAnswers[2].Trim()))
                 {
                     isWrongAnswersStringCorrect = true;
                     var newQuestionsFromUser = new Question
                     {
-                        QuestionId = numberOfQuestionInDatabase + 1,
+                        QuestionId = counterQuestionId + 1,
                         IsApproved = false,
                         QuestionContent = questionContent,
                         Answers = new List<Answer>
                     {
-                        new Answer { AnswerId = 4 * numberOfQuestionInDatabase + 1, AnswerContent = correctAnswer, IsCorrect = true },
-                        new Answer { AnswerId = 4 * numberOfQuestionInDatabase + 2, AnswerContent = splitAnswers[0], IsCorrect = false },
-                        new Answer { AnswerId = 4 * numberOfQuestionInDatabase + 3, AnswerContent = splitAnswers[1], IsCorrect = false },
-                        new Answer { AnswerId = 4 * numberOfQuestionInDatabase + 4, AnswerContent = splitAnswers[2], IsCorrect = false },
+                        new Answer { AnswerId = 4 * counterQuestionId + 1, AnswerContent = correctAnswer, IsCorrect = true },
+                        new Answer { AnswerId = 4 * counterQuestionId + 2, AnswerContent = splitAnswers[0], IsCorrect = false },
+                        new Answer { AnswerId = 4 * counterQuestionId + 3, AnswerContent = splitAnswers[1], IsCorrect = false },
+                        new Answer { AnswerId = 4 * counterQuestionId + 4, AnswerContent = splitAnswers[2], IsCorrect = false },
                     }
 
                     };
@@ -171,13 +109,7 @@ namespace Labb4_Quiz
         {
             Console.WriteLine("The quiz starts right now. Good luck!");
 
-            foreach (var question in quizContext.Questions)
-            {
-                if (question.IsApproved)
-                {
-                    questionIdList.Add(question.QuestionId);
-                }
-            }
+            FilterApprovedQuestions();            
 
             int numberOfQuestions = 10;
             Random random = new Random();
@@ -194,55 +126,63 @@ namespace Labb4_Quiz
                     i--;
                 }
             }
-            List<int> quizIdList = new List<int>();
-            foreach (var quiz in quizContext.Quizzes)
-            {
-                quizIdList.Add(quiz.QuizId);
-            }
-            var numberOfQuizesInDatabase = quizIdList.Count();
 
-            Quiz newQuiz = new Quiz { QuizId = numberOfQuizesInDatabase + 1, Questions = new List<Question>() };
+            Quiz newQuiz = new Quiz { QuizId = 1, Questions = new List<Question>() };  // TODO: Fix QuizId
             foreach (var randomQuestion in random10Questions)
             {
                 foreach (var question in quizContext.Questions)
                 {
                     if (question.QuestionId == randomQuestion)
                     {
-                        newQuiz.Questions.Add(question);
+                        newQuiz.Questions.Add(question);                        
                     }
                 }
             }
             quizContext.Quizzes.Add(newQuiz);
             quizContext.SaveChanges();
-            int score = 0;
 
             foreach (var question in quizContext.Quizzes.ToList().Last().Questions)
             {
                 string correctAnswer = AskQuestion(question);
-                Console.Write("\nWhat is the correct answer?\nEnter A, B, C or D: ");
-                string usersAnswer = Console.ReadLine().Trim().ToUpper();
-                if (usersAnswer == correctAnswer)
-                {
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine("\nCorrect answer!!");
-                    Console.ForegroundColor = ConsoleColor.Gray;
-                    score++;
-                }
-                else
-                {
-                    Console.ForegroundColor = ConsoleColor.DarkRed;
-                    Console.WriteLine("\nIncorrect answer...");
-                    Console.ForegroundColor = ConsoleColor.Gray;
-                    Console.WriteLine("The correct answer is:" + correctAnswer);
-                }
-
-                Console.WriteLine("Current score: " + score);
-
-                currentUser.Score = score;
-                quizContext.Users.Update(currentUser);
-                quizContext.SaveChanges();
+                int currentScore = ValidateAnswers(correctAnswer);
+                UpdateUsersScore(currentUser, currentScore);
             }
-            Console.WriteLine($"\nCongratulations! Your final score is: {score}.");
+        }
+
+        private static void FilterApprovedQuestions()
+        {
+            foreach (var question in quizContext.Questions)
+            {
+                if (question.IsApproved)
+                {
+                    questionIdList.Add(question.QuestionId);
+                }
+            }
+        }
+
+        private static void UpdateUsersScore(User currentUser, int currentScore)
+        {
+            currentUser.Score = currentScore;
+            quizContext.Users.Update(currentUser);
+            quizContext.SaveChanges();
+        }
+
+        private static int ValidateAnswers(string correctAnswer)
+        {
+            int currentScore = 0;
+            Console.Write("What is the correct answer?\nEnter A, B, C or D: ");
+            string usersAnswer = Console.ReadLine().Trim().ToUpper();
+            if (usersAnswer == correctAnswer)
+            {
+                Console.WriteLine("\nCorrect");
+                currentScore++;
+            }
+            else
+            {
+                Console.WriteLine("\nIncorrect, correct answer is: " + correctAnswer);
+            }
+            Console.WriteLine("Current score: " + currentScore);
+            return currentScore;
         }
 
         private static string AskQuestion(Question question)
@@ -310,7 +250,7 @@ namespace Labb4_Quiz
             quizContext.SaveChanges();
         }
 
-        private static User StartPageUser()
+        private static User StartPage()
         {
             Console.WriteLine("Welcome to play the best quiz of the year!" +
                               "\nPlease enter your username:");
@@ -320,11 +260,11 @@ namespace Labb4_Quiz
             {
                 userIdList.Add(item.UserId);
             }
-            var numberOfUsersInDatabase = userIdList.Count();
+            var counterUserID = userIdList.Count();
 
             var newUser = new User
             {
-                UserId = numberOfUsersInDatabase + 1,
+                UserId = counterUserID + 1,
                 Name = userNameInput,
                 Score = 0,
                 UserStatus = UserStatus.User
@@ -349,16 +289,16 @@ namespace Labb4_Quiz
                 "Where in the world would you find a building called the Atomium?",
                 "What is a gooseberry fool?",
                 "In which movie does Katharine Hepburn say to Humphrey Bogart 'Dear, Dear, What is your first name?'?",
-                "Which author has written Il nome della rosa in 1980?",
+                "Which author has written Il nome della rosa (1980)?",
                 "What is the name of Japanese poetry form consisting of 5+7+5 syllables?",
-                "Which author created the book series The Mortal Instruments?",
-                "Who wrote this classic children's fiction novel Black Beauty in 1877?",
-                "Who wrote this Pulitzer Prize winning or nominated book: The Accidental Tourist?",
-                "Which author created the book series Goosebumps?",
-                "Who is the author of Humboldt's Gift?",
-                "Who is the author of Madame Bovary?",
-                "What is the capital of American Samoa?",
-                "Lolland island is part of which country?",
+                "Which author(s) created the book series The Mortal Instruments?",
+                "Who wrote this classic children's fiction novel? Black Beauty (1877)?",
+                "Who wrote this Pulitzer Prize winning or nominated book? The Accidental Tourist?",
+                "Which author(s) created the book series Goosebumps?",
+                "Who is the author of Humboldt's Gift",
+                "Who is the author of Madame Bovary",
+                "What is the capital of American Samoa",
+                "This island Lolland is part of which country? Lolland",
                 "What is the capital of Ghana?"
             };
 
@@ -386,7 +326,7 @@ namespace Labb4_Quiz
 
             List<string> correctAnswers = new List<string>
             {
-                "George Eliot", "Veterinary", "Gibraltar", "Malta", "The male carries the young", "Chicago", "Jethro Tull", "Brussels Belgium",
+                "George Eliot", "Veterinary", "Gibraltar", " Malta", "The male carries the young", "Chicago", "Jethro Tull", "Brussels Belgium",
                 "A dessert with yoghurt or custard", "The African Queen", "Umberto Eco", "Haiku", "Cassandra Clare", "Anna Sewell", "Anne Tyler",
                 "R.L. Stine", "Saul Bellow", "Gustave Flaubert", "Pago Pago", "South Africa", "Accra"
 
