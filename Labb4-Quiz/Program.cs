@@ -74,21 +74,21 @@ namespace Labb4_Quiz
                 {
                     questionIdList.Add(question.QuestionId);
                 }
-                var counterQuestionId = questionIdList.Count();
+                var numberOfQuestionInDatabase = questionIdList.Count();
                 if ((splitAnswers.Length == 3) && (correctAnswer != splitAnswers[0].Trim()) && (correctAnswer != splitAnswers[1].Trim()) && (correctAnswer != splitAnswers[2].Trim()))
                 {
                     isWrongAnswersStringCorrect = true;
                     var newQuestionsFromUser = new Question
                     {
-                        QuestionId = counterQuestionId + 1,
+                        QuestionId = numberOfQuestionInDatabase + 1,
                         IsApproved = false,
                         QuestionContent = questionContent,
                         Answers = new List<Answer>
                     {
-                        new Answer { AnswerId = 4 * counterQuestionId + 1, AnswerContent = correctAnswer, IsCorrect = true },
-                        new Answer { AnswerId = 4 * counterQuestionId + 2, AnswerContent = splitAnswers[0], IsCorrect = false },
-                        new Answer { AnswerId = 4 * counterQuestionId + 3, AnswerContent = splitAnswers[1], IsCorrect = false },
-                        new Answer { AnswerId = 4 * counterQuestionId + 4, AnswerContent = splitAnswers[2], IsCorrect = false },
+                        new Answer { AnswerId = 4 * numberOfQuestionInDatabase + 1, AnswerContent = correctAnswer, IsCorrect = true },
+                        new Answer { AnswerId = 4 * numberOfQuestionInDatabase + 2, AnswerContent = splitAnswers[0], IsCorrect = false },
+                        new Answer { AnswerId = 4 * numberOfQuestionInDatabase + 3, AnswerContent = splitAnswers[1], IsCorrect = false },
+                        new Answer { AnswerId = 4 * numberOfQuestionInDatabase + 4, AnswerContent = splitAnswers[2], IsCorrect = false },
                     }
 
                     };
@@ -114,7 +114,7 @@ namespace Labb4_Quiz
                 if (question.IsApproved)
                 {
                     questionIdList.Add(question.QuestionId);
-                }               
+                }
             }
 
             int numberOfQuestions = 10;
@@ -132,44 +132,56 @@ namespace Labb4_Quiz
                     i--;
                 }
             }
+            List<int> quizIdList = new List<int>();
+            foreach (var quiz in quizContext.Quizzes)
+            {
+                quizIdList.Add(quiz.QuizId);
+            }
+            var numberOfQuizesInDatabase = quizIdList.Count();
 
-            Quiz newQuiz = new Quiz { QuizId = 1, Questions = new List<Question>() };  // TODO: Fix QuizId
+            Quiz newQuiz = new Quiz { QuizId = numberOfQuizesInDatabase + 1, Questions = new List<Question>() };  // TODO: Fix QuizId
             foreach (var randomQuestion in random10Questions)
             {
                 foreach (var question in quizContext.Questions)
                 {
                     if (question.QuestionId == randomQuestion)
                     {
-                        newQuiz.Questions.Add(question);                        
+                        newQuiz.Questions.Add(question);
                     }
                 }
             }
             quizContext.Quizzes.Add(newQuiz);
             quizContext.SaveChanges();
-
+            int score = 0;
             foreach (var question in quizContext.Quizzes.ToList().Last().Questions)
             {
                 string correctAnswer = AskQuestion(question);
-                
-                int currentScore = 0;
-                Console.Write("What is the correct answer?\nEnter A, B, C or D: ");
+
+                //int currentScore = 0;
+                Console.Write("\nWhat is the correct answer?\nEnter A, B, C or D: ");
                 string usersAnswer = Console.ReadLine().Trim().ToUpper();
                 if (usersAnswer == correctAnswer)
                 {
-                    Console.WriteLine("\nCorrect");
-                    currentScore++;
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine("\nCorrect answer!!");
+                    Console.ForegroundColor = ConsoleColor.Gray;
+                    score++;
                 }
                 else
                 {
-                    Console.WriteLine("\nIncorrect, correct answer is: " + correctAnswer);
+                    Console.ForegroundColor = ConsoleColor.DarkRed;
+                    Console.WriteLine("\nIncorrect answer...");
+                    Console.ForegroundColor = ConsoleColor.Gray;
+                    Console.WriteLine("The correct answer is:" + correctAnswer);
                 }
 
-                Console.WriteLine("Current score: " + currentScore);
+                Console.WriteLine("Current score: " + score);
 
-                currentUser.Score = currentScore;
+                currentUser.Score = score;
                 quizContext.Users.Update(currentUser);
                 quizContext.SaveChanges();
             }
+            Console.WriteLine($"\nCongratulations! Your final score is: {score}.");
         }
 
         private static string AskQuestion(Question question)
@@ -247,11 +259,11 @@ namespace Labb4_Quiz
             {
                 userIdList.Add(item.UserId);
             }
-            var counterUserID = userIdList.Count();
+            var numberOfUsersInDatabase = userIdList.Count();
 
             var newUser = new User
             {
-                UserId = counterUserID + 1,
+                UserId = numberOfUsersInDatabase + 1,
                 Name = userNameInput,
                 Score = 0,
                 UserStatus = UserStatus.User
