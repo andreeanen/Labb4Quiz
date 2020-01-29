@@ -58,7 +58,33 @@ namespace Labb4_Quiz
 
         private static void PrintAdminMenu()
         {
-            Console.WriteLine("Write username and password");
+            Console.WriteLine("Write your admin name:");
+            string adminName = Console.ReadLine().Trim();
+            Console.WriteLine("Write your admin password:");
+            string adminPassword = Console.ReadLine().Trim();
+            bool isAdminValid = false;
+            foreach (var user in quizContext.Users.ToList())
+            {
+                if ((user.Name == adminName) & (user.Password == adminPassword) & (user.UserStatus == UserStatus.Admin))
+                {
+                    isAdminValid = true;
+                    break;
+                }
+            }
+            if (isAdminValid)
+            {
+                ReviewNotApprovedQuestions();
+            }
+            else
+            {
+                Console.WriteLine("Your admin name or password are incorrect. Try again!");
+                PrintAdminMenu();
+            }
+        }
+
+        private static void ReviewNotApprovedQuestions()
+        {
+            Console.WriteLine("hello kitty");
         }
 
         private static void PrintUserMenu(User currentUser)
