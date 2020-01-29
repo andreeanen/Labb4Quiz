@@ -17,15 +17,51 @@ namespace Labb4_Quiz
 
             RegisterAdmins();
             LoadQuestions();
+            PrintMainMenu();
 
-            User currentUser = StartPage();
-            PrintMenu(currentUser);
+            //User currentUser = StartPage();
+            //PrintMenu(currentUser);
 
             Console.WriteLine("Press any key to close the application...");
             Console.ReadKey(true);
         }
 
-        private static void PrintMenu(User currentUser)
+        private static void PrintMainMenu()
+        {
+            bool isInputCorrect = false;
+            while (!isInputCorrect)
+            {
+                Console.WriteLine("Hello!\nChoose one option by typing the number in front of it:" +
+                                              "\n1.Log in as a user" +
+                                              "\n2.Log in as an admin" +
+                                              "\n3.Exit application");
+                string input = Console.ReadLine().Trim();
+                switch (input)
+                {
+                    case "1":
+                        User currentUser = StartPageUser();
+                        PrintUserMenu(currentUser);
+                        isInputCorrect = true;
+                        break;
+                    case "2":
+                        PrintAdminMenu();
+                        isInputCorrect = true;
+                        break;
+                    case "3":
+                        return;
+                    default:
+                        Console.WriteLine("Your input is incorrect. Please choose one option by writing the number in front of it.");
+                        break;
+                }
+            }
+        }
+
+        private static void PrintAdminMenu()
+        {
+            Console.WriteLine("Write username and password");
+        }
+
+        private static void PrintUserMenu(User currentUser)
         {
             bool isInputValid = false;
             while (!isInputValid)
@@ -33,7 +69,7 @@ namespace Labb4_Quiz
                 Console.WriteLine("Choose what you would like to do by typing the number in front of the option." +
                                   "\n1.Play a quiz" +
                                   "\n2.Add a new question to the quiz" +
-                                  "\n3.Quit");
+                                  "\n3.Exit quiz");
                 string userInput = Console.ReadLine();
                 switch (userInput)
                 {
@@ -46,7 +82,7 @@ namespace Labb4_Quiz
                         isInputValid = true;
                         break;
                     case "3":
-                        break;
+                        return;
                     default:
                         Console.WriteLine("Your input is incorrect! Please try again..");
                         break;
@@ -248,7 +284,7 @@ namespace Labb4_Quiz
             quizContext.SaveChanges();
         }
 
-        private static User StartPage()
+        private static User StartPageUser()
         {
             Console.WriteLine("Welcome to play the best quiz of the year!" +
                               "\nPlease enter your username:");
