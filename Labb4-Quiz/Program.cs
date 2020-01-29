@@ -85,6 +85,7 @@ namespace Labb4_Quiz
         private static void ReviewNotApprovedQuestions()
         {
             Console.WriteLine("hello kitty");
+            Console.WriteLine("try again");
         }
 
         private static void PrintUserMenu(User currentUser)
