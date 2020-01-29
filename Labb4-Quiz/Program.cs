@@ -109,13 +109,7 @@ namespace Labb4_Quiz
         {
             Console.WriteLine("The quiz starts right now. Good luck!");
 
-            foreach (var question in quizContext.Questions)
-            {
-                if (question.IsApproved)
-                {
-                    questionIdList.Add(question.QuestionId);
-                }               
-            }
+            FilterApprovedQuestions();            
 
             int numberOfQuestions = 10;
             Random random = new Random();
@@ -152,6 +146,17 @@ namespace Labb4_Quiz
                 string correctAnswer = AskQuestion(question);
                 int currentScore = ValidateAnswers(correctAnswer);
                 UpdateUsersScore(currentUser, currentScore);
+            }
+        }
+
+        private static void FilterApprovedQuestions()
+        {
+            foreach (var question in quizContext.Questions)
+            {
+                if (question.IsApproved)
+                {
+                    questionIdList.Add(question.QuestionId);
+                }
             }
         }
 
