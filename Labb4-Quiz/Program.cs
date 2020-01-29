@@ -102,13 +102,32 @@ namespace Labb4_Quiz
                         ApproveUserQuestions();
                         break;
                     case "2":
-                        // UpgradeUser();
+                        UpgradeUser();
                         break;
                     case "3":
                         return;
                     default:
                         Console.WriteLine("Your input is incorrect. Please choose one option by writing the number in front of it.");
                         break;
+                }
+            }
+        }
+
+        private static void UpgradeUser()
+        {
+            foreach (var user in quizContext.Users)
+            {
+                if (user.UserStatus == UserStatus.User)
+                {
+                    Console.WriteLine($"\nTo upgrade this user: {user.Name} write yes." +
+                                      $"\nOtherwise write any key and press enter to continue.");
+                    string approval = Console.ReadLine().Trim().ToLower();
+                    if (approval == "yes" || approval == "y")
+                    {
+                        user.UserStatus = UserStatus.Admin;
+                        quizContext.Users.Update(user);
+                        quizContext.SaveChanges();
+                    }
                 }
             }
         }
@@ -124,14 +143,14 @@ namespace Labb4_Quiz
                     {
                         if (answer.IsCorrect)
                         {
-                            Console.Write($"The correct answer: {answer.AnswerContent}");
+                            Console.Write($"\nThe correct answer: {answer.AnswerContent}");
                         }
                         else
                         {
-                            Console.Write($"Incorrect answer: {answer.AnswerContent}");
+                            Console.Write($"\nIncorrect answer: {answer.AnswerContent}");
                         }
                     }
-                    Console.WriteLine("Do you want to approve the question (yes/no)?");
+                    Console.WriteLine("\nDo you want to approve the question (yes/no)?");
                     string approval = Console.ReadLine().Trim().ToLower();
                     if (approval == "yes" || approval == "y")
                     {
@@ -149,7 +168,7 @@ namespace Labb4_Quiz
                         Console.WriteLine("Invalid input, enter yes or no!");
                         ApproveUserQuestions();
                     }
-                }               
+                }
             }
         }
 
