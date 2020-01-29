@@ -31,9 +31,9 @@ namespace Labb4_Quiz
             while (!isInputValid)
             {
                 Console.WriteLine("Choose what you would like to do by typing the number in front of the option." +
-                              "\n1.Play a quiz" +
-                              "\n2.Add a new question to the quiz" +
-                              "\n3.Quit");
+                                  "\n1.Play a quiz" +
+                                  "\n2.Add a new question to the quiz" +
+                                  "\n3.Quit");
                 string userInput = Console.ReadLine();
                 switch (userInput)
                 {
@@ -107,11 +107,7 @@ namespace Labb4_Quiz
 
         private static void PlayQuiz(User currentUser)
         {
-            int numberOfQuestions = 10;
             Console.WriteLine("The quiz starts right now. Good luck!");
-
-            Quiz newQuiz = new Quiz { QuizId = 1 , Questions = new List<Question>() };  // TODO: Fix QuizId
-            Random random = new Random();
 
             foreach (var question in quizContext.Questions)
             {
@@ -120,7 +116,9 @@ namespace Labb4_Quiz
                     questionIdList.Add(question.QuestionId);
                 }               
             }
-            
+
+            int numberOfQuestions = 10;
+            Random random = new Random();
             List<int> random10Questions = new List<int>();
             for (int i = 0; i < numberOfQuestions; i++)
             {
@@ -135,6 +133,7 @@ namespace Labb4_Quiz
                 }
             }
 
+            Quiz newQuiz = new Quiz { QuizId = 1, Questions = new List<Question>() };  // TODO: Fix QuizId
             foreach (var randomQuestion in random10Questions)
             {
                 foreach (var question in quizContext.Questions)
@@ -148,37 +147,37 @@ namespace Labb4_Quiz
             quizContext.Quizzes.Add(newQuiz);
             quizContext.SaveChanges();
 
-            int currentScore = 0;
-
             foreach (var question in quizContext.Quizzes.ToList().Last().Questions)
             {
                 Console.WriteLine($"\n{question.QuestionContent}");
 
-                List<int> randomQuestionOrder = new List<int>();
-                for (int i = 0; i < 4; i++)
-                {
-                    int randomAnswerIndex = random.Next(0, 4);
-                    if (!randomQuestionOrder.Contains(randomAnswerIndex))
-                    {
-                        randomQuestionOrder.Add(randomAnswerIndex);
-                    }
-                    else
-                    {
-                        i--;
-                    }
-                }
+                List<int> randomAnswersOrder = ShuffleAnswersOrder();
+                //List<int> randomQuestionOrder = new List<int>();
+                //for (int i = 0; i < 4; i++)
+                //{
+                //    int randomAnswerIndex = random.Next(0, 4);
+                //    if (!randomQuestionOrder.Contains(randomAnswerIndex))
+                //    {
+                //        randomQuestionOrder.Add(randomAnswerIndex);
+                //    }
+                //    else
+                //    {
+                //        i--;
+                //    }
+                //}
 
                 List<string> abcd = new List<string> { "A", "B", "C", "D" };
                 string correctAnswer = string.Empty;
                 for (int i = 0; i < 4; i++)
                 {
-                    Console.WriteLine($"{abcd[i]} - {question.Answers[randomQuestionOrder[i]].AnswerContent}");
-                    if (question.Answers[randomQuestionOrder[i]].IsCorrect)
+                    Console.WriteLine($"{abcd[i]} - {question.Answers[randomAnswersOrder[i]].AnswerContent}");
+                    if (question.Answers[randomAnswersOrder[i]].IsCorrect)
                     {
                         correctAnswer = abcd[i];
                     }
                 }
 
+                int currentScore = 0;
                 Console.Write("What is the correct answer?\nEnter A, B, C or D: ");
                 string usersAnswer = Console.ReadLine().Trim().ToUpper();
                 if (usersAnswer == correctAnswer)
@@ -197,6 +196,25 @@ namespace Labb4_Quiz
                 quizContext.Users.Update(currentUser);
                 quizContext.SaveChanges();
             }
+        }
+
+        private static List<int> ShuffleAnswersOrder()
+        {
+            List<int> randomAnswersOrder = new List<int>();
+            Random random = new Random();
+            for (int i = 0; i < 4; i++)
+            {
+                int randomAnswerIndex = random.Next(0, 4);
+                if (!randomAnswersOrder.Contains(randomAnswerIndex))
+                {
+                    randomAnswersOrder.Add(randomAnswerIndex);
+                }
+                else
+                {
+                    i--;
+                }
+            }
+            return randomAnswersOrder;
         }
 
         private static void RegisterAdmins()
