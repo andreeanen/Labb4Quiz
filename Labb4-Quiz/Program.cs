@@ -28,24 +28,24 @@ namespace Labb4_Quiz
 
         private static void PrintMainMenu()
         {
-            bool isInputCorrect = false;
-            while (!isInputCorrect)
+            //bool isInputCorrect = false;
+            while (true/*!isInputCorrect*/)
             {
                 Console.WriteLine("Hello!\nChoose one option by typing the number in front of it:" +
-                                              "\n1.Log in as a user" +
-                                              "\n2.Log in as an admin" +
-                                              "\n3.Exit application");
+                                              "\n1. Log in as a user" +
+                                              "\n2. Log in as an admin" +
+                                              "\n3. Exit application");
                 string input = Console.ReadLine().Trim();
                 switch (input)
                 {
                     case "1":
                         User currentUser = StartPageUser();
                         PrintUserMenu(currentUser);
-                        isInputCorrect = true;
+                        //isInputCorrect = true;
                         break;
                     case "2":
                         PrintAdminMenu();
-                        isInputCorrect = true;
+                        //isInputCorrect = true;
                         break;
                     case "3":
                         return;
@@ -95,23 +95,23 @@ namespace Labb4_Quiz
 
         private static void PrintUserMenu(User currentUser)
         {
-            bool isInputValid = false;
-            while (!isInputValid)
+            //bool isInputValid = false;
+            while (true/*!isInputValid*/)
             {
                 Console.WriteLine("Choose what you would like to do by typing the number in front of the option." +
-                                  "\n1.Play a quiz" +
-                                  "\n2.Add a new question to the quiz" +
-                                  "\n3.Exit quiz");
+                                  "\n1. Play a quiz" +
+                                  "\n2. Add a new question to the quiz" +
+                                  "\n3. Return to main menu");
                 string userInput = Console.ReadLine();
                 switch (userInput)
                 {
                     case "1":
                         PlayQuiz(currentUser);
-                        isInputValid = true;
+                        //isInputValid = true;
                         break;
                     case "2":
                         AddNewQuestionFromUser();
-                        isInputValid = true;
+                        //isInputValid = true;
                         break;
                     case "3":
                         return;
