@@ -199,35 +199,66 @@ namespace Labb4_Quiz
                 string wrongAnswers = Console.ReadLine().Trim(' ');
                 var splitAnswers = wrongAnswers.Split(",");
 
-                if (questionIdList.Count > 0)
-                {
-                    questionIdList.Clear();
-                }
+                //if (questionIdList.Count > 0)
+                //{
+                //    questionIdList.Clear();
+                //}
+                //foreach (var question in quizContext.Questions)
+                //{
+                //    questionIdList.Add(question.QuestionId);
+                //}
+
+                int lastId = 0;
                 foreach (var question in quizContext.Questions)
                 {
-                    questionIdList.Add(question.QuestionId);
+                    if (question.QuestionId > lastId)
+                    {
+                        lastId = question.QuestionId;
+                    }
                 }
-                var numberOfQuestionInDatabase = questionIdList.Count();
+
                 if ((splitAnswers.Length == 3) && (correctAnswer != splitAnswers[0].Trim()) && (correctAnswer != splitAnswers[1].Trim()) && (correctAnswer != splitAnswers[2].Trim()))
                 {
                     isWrongAnswersStringCorrect = true;
                     var newQuestionsFromUser = new Question
                     {
-                        QuestionId = numberOfQuestionInDatabase + 1,
+                        QuestionId = lastId + 1,
                         IsApproved = false,
                         QuestionContent = questionContent,
                         Answers = new List<Answer>
                         {
-                        new Answer { AnswerId = 4 * numberOfQuestionInDatabase + 1, AnswerContent = correctAnswer, IsCorrect = true },
-                        new Answer { AnswerId = 4 * numberOfQuestionInDatabase + 2, AnswerContent = splitAnswers[0], IsCorrect = false },
-                        new Answer { AnswerId = 4 * numberOfQuestionInDatabase + 3, AnswerContent = splitAnswers[1], IsCorrect = false },
-                        new Answer { AnswerId = 4 * numberOfQuestionInDatabase + 4, AnswerContent = splitAnswers[2], IsCorrect = false },
+                        new Answer { AnswerId = 4 * lastId + 1, AnswerContent = correctAnswer, IsCorrect = true },
+                        new Answer { AnswerId = 4 * lastId + 2, AnswerContent = splitAnswers[0], IsCorrect = false },
+                        new Answer { AnswerId = 4 * lastId + 3, AnswerContent = splitAnswers[1], IsCorrect = false },
+                        new Answer { AnswerId = 4 * lastId + 4, AnswerContent = splitAnswers[2], IsCorrect = false },
                         }
 
                     };
                     quizContext.Questions.Add(newQuestionsFromUser);
                     quizContext.SaveChanges();
                     Console.WriteLine("Your question was submited and an administrator will publish it.");
+
+                    //var numberOfQuestionInDatabase = questionIdList.Count();
+                    //if ((splitAnswers.Length == 3) && (correctAnswer != splitAnswers[0].Trim()) && (correctAnswer != splitAnswers[1].Trim()) && (correctAnswer != splitAnswers[2].Trim()))
+                    //{
+                    //    isWrongAnswersStringCorrect = true;
+                    //    var newQuestionsFromUser = new Question
+                    //    {
+                    //        QuestionId = numberOfQuestionInDatabase + 1,
+                    //        IsApproved = false,
+                    //        QuestionContent = questionContent,
+                    //        Answers = new List<Answer>
+                    //        {
+                    //        new Answer { AnswerId = 4 * numberOfQuestionInDatabase + 1, AnswerContent = correctAnswer, IsCorrect = true },
+                    //        new Answer { AnswerId = 4 * numberOfQuestionInDatabase + 2, AnswerContent = splitAnswers[0], IsCorrect = false },
+                    //        new Answer { AnswerId = 4 * numberOfQuestionInDatabase + 3, AnswerContent = splitAnswers[1], IsCorrect = false },
+                    //        new Answer { AnswerId = 4 * numberOfQuestionInDatabase + 4, AnswerContent = splitAnswers[2], IsCorrect = false },
+                    //        }
+
+                    //    };
+                    //    quizContext.Questions.Add(newQuestionsFromUser);
+                    //    quizContext.SaveChanges();
+                    //    Console.WriteLine("Your question was submited and an administrator will publish it.");
                 }
                 else
                 {
