@@ -172,7 +172,7 @@ namespace Labb4_Quiz
         {
             Console.WriteLine("The quiz starts right now. Good luck!");
 
-            FilterApprovedQuestions();            
+            FilterApprovedQuestions();
 
             int numberOfQuestions = 10;
             Random random = new Random();
@@ -209,14 +209,17 @@ namespace Labb4_Quiz
             }
             quizContext.Quizzes.Add(newQuiz);
             quizContext.SaveChanges();
-            int score = 0;
+            int finalScore = 0;
 
             foreach (var question in quizContext.Quizzes.ToList().Last().Questions)
             {
                 string correctAnswer = AskQuestion(question);
                 int currentScore = ValidateAnswers(correctAnswer);
-                UpdateUsersScore(currentUser, currentScore);
+                finalScore += currentScore;
+                //Console.WriteLine("\nCurrent score: " + finalScore);
+                UpdateUsersScore(currentUser, finalScore);
             }
+            Console.WriteLine("\nFinal score: " + finalScore);
         }
 
         private static void FilterApprovedQuestions()
@@ -230,29 +233,32 @@ namespace Labb4_Quiz
             }
         }
 
-        private static void UpdateUsersScore(User currentUser, int currentScore)
+        private static void UpdateUsersScore(User currentUser, int finalScore)
         {
-            currentUser.Score = currentScore;
+            currentUser.Score = finalScore;
             quizContext.Users.Update(currentUser);
             quizContext.SaveChanges();
         }
 
         private static int ValidateAnswers(string correctAnswer)
         {
-            int currentScore = 0;
             Console.Write("What is the correct answer?\nEnter A, B, C or D: ");
             string usersAnswer = Console.ReadLine().Trim().ToUpper();
             if (usersAnswer == correctAnswer)
             {
-                Console.WriteLine("\nCorrect");
-                currentScore++;
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("\nCorrect answer!!");
+                Console.ForegroundColor = ConsoleColor.Gray;
+                return 1;
             }
             else
             {
-                Console.WriteLine("\nIncorrect, correct answer is: " + correctAnswer);
+                Console.ForegroundColor = ConsoleColor.DarkRed;
+                Console.WriteLine("\nIncorrect answer...");
+                Console.ForegroundColor = ConsoleColor.Gray;
+                Console.WriteLine("The correct answer is:" + correctAnswer);
+                return 0;
             }
-            Console.WriteLine("Current score: " + currentScore);
-            return currentScore;
         }
 
         private static string AskQuestion(Question question)
