@@ -150,26 +150,34 @@ namespace Labb4_Quiz
             foreach (var question in quizContext.Quizzes.ToList().Last().Questions)
             {
                 string correctAnswer = AskQuestion(question);
-                
-                int currentScore = 0;
-                Console.Write("What is the correct answer?\nEnter A, B, C or D: ");
-                string usersAnswer = Console.ReadLine().Trim().ToUpper();
-                if (usersAnswer == correctAnswer)
-                {
-                    Console.WriteLine("\nCorrect");
-                    currentScore++;
-                }
-                else
-                {
-                    Console.WriteLine("\nIncorrect, correct answer is: " + correctAnswer);
-                }
-
-                Console.WriteLine("Current score: " + currentScore);
-
-                currentUser.Score = currentScore;
-                quizContext.Users.Update(currentUser);
-                quizContext.SaveChanges();
+                int currentScore = ValidateAnswers(correctAnswer);
+                UpdateUsersScore(currentUser, currentScore);
             }
+        }
+
+        private static void UpdateUsersScore(User currentUser, int currentScore)
+        {
+            currentUser.Score = currentScore;
+            quizContext.Users.Update(currentUser);
+            quizContext.SaveChanges();
+        }
+
+        private static int ValidateAnswers(string correctAnswer)
+        {
+            int currentScore = 0;
+            Console.Write("What is the correct answer?\nEnter A, B, C or D: ");
+            string usersAnswer = Console.ReadLine().Trim().ToUpper();
+            if (usersAnswer == correctAnswer)
+            {
+                Console.WriteLine("\nCorrect");
+                currentScore++;
+            }
+            else
+            {
+                Console.WriteLine("\nIncorrect, correct answer is: " + correctAnswer);
+            }
+            Console.WriteLine("Current score: " + currentScore);
+            return currentScore;
         }
 
         private static string AskQuestion(Question question)
