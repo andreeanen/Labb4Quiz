@@ -44,7 +44,7 @@ namespace Labb4_Quiz
                         //isInputCorrect = true;
                         break;
                     case "2":
-                        PrintAdminMenu();
+                        LogInAsAdmin();
                         //isInputCorrect = true;
                         break;
                     case "3":
@@ -56,7 +56,7 @@ namespace Labb4_Quiz
             }
         }
 
-        private static void PrintAdminMenu()
+        private static void LogInAsAdmin()
         {
             Console.WriteLine("Write your admin name:");
             string adminName = Console.ReadLine().Trim();   // TODO: validate name: no empty strings, no X etc.
@@ -78,19 +78,79 @@ namespace Labb4_Quiz
             }
             if (isAdminValid)
             {
-                ReviewNotApprovedQuestions();
+                PrintAdminMenu();
             }
             else
             {
                 Console.WriteLine("Your admin name or password are incorrect.\nTry again or press X to exit!");
-                PrintAdminMenu();
+                LogInAsAdmin();
             }
         }
 
-        private static void ReviewNotApprovedQuestions()
+        private static void PrintAdminMenu()
         {
-            Console.WriteLine("hello kitty");
-            Console.WriteLine("try again");
+            while (true)
+            {
+                Console.WriteLine("Hello!\nChoose one option by typing the number in front of it:" +
+                                              "\n1. Review not approved questions added by users" +
+                                              "\n2. Upgrade an user to admin" +
+                                              "\n3. Return to main menu");
+                string input = Console.ReadLine().Trim();
+                switch (input)
+                {
+                    case "1":
+                        ApproveUserQuestions();
+                        break;
+                    case "2":
+                        // UpgradeUser();
+                        break;
+                    case "3":
+                        return;
+                    default:
+                        Console.WriteLine("Your input is incorrect. Please choose one option by writing the number in front of it.");
+                        break;
+                }
+            }
+        }
+
+        private static void ApproveUserQuestions()
+        {
+            foreach (var question in quizContext.Questions.ToList())
+            {
+                if (!question.IsApproved)
+                {
+                    Console.WriteLine($"Question:\n{question.QuestionContent}\n");
+                    foreach (var answer in question.Answers.ToList())
+                    {
+                        if (answer.IsCorrect)
+                        {
+                            Console.Write($"The correct answer: {answer.AnswerContent}");
+                        }
+                        else
+                        {
+                            Console.Write($"Incorrect answer: {answer.AnswerContent}");
+                        }
+                    }
+                    Console.WriteLine("Do you want to approve the question (yes/no)?");
+                    string approval = Console.ReadLine().Trim().ToLower();
+                    if (approval == "yes" || approval == "y")
+                    {
+                        question.IsApproved = true;
+                        quizContext.Questions.Update(question);
+                        quizContext.SaveChanges();
+                    }
+                    else if (approval == "no" || approval == "n")
+                    {
+                        quizContext.Questions.Remove(question);
+                        quizContext.SaveChanges();
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid input, enter yes or no!");
+                        ApproveUserQuestions();
+                    }
+                }               
+            }
         }
 
         private static void PrintUserMenu(User currentUser)
