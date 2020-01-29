@@ -152,30 +152,8 @@ namespace Labb4_Quiz
                 Console.WriteLine($"\n{question.QuestionContent}");
 
                 List<int> randomAnswersOrder = ShuffleAnswersOrder();
-                //List<int> randomQuestionOrder = new List<int>();
-                //for (int i = 0; i < 4; i++)
-                //{
-                //    int randomAnswerIndex = random.Next(0, 4);
-                //    if (!randomQuestionOrder.Contains(randomAnswerIndex))
-                //    {
-                //        randomQuestionOrder.Add(randomAnswerIndex);
-                //    }
-                //    else
-                //    {
-                //        i--;
-                //    }
-                //}
 
-                List<string> abcd = new List<string> { "A", "B", "C", "D" };
-                string correctAnswer = string.Empty;
-                for (int i = 0; i < 4; i++)
-                {
-                    Console.WriteLine($"{abcd[i]} - {question.Answers[randomAnswersOrder[i]].AnswerContent}");
-                    if (question.Answers[randomAnswersOrder[i]].IsCorrect)
-                    {
-                        correctAnswer = abcd[i];
-                    }
-                }
+                string correctAnswer = AskQuestion(question, randomAnswersOrder);
 
                 int currentScore = 0;
                 Console.Write("What is the correct answer?\nEnter A, B, C or D: ");
@@ -196,6 +174,21 @@ namespace Labb4_Quiz
                 quizContext.Users.Update(currentUser);
                 quizContext.SaveChanges();
             }
+        }
+
+        private static string AskQuestion(Question question, List<int> randomAnswersOrder)
+        {
+            List<string> abcd = new List<string> { "A", "B", "C", "D" };
+            string correctAnswer = string.Empty;
+            for (int i = 0; i < 4; i++)
+            {
+                Console.WriteLine($"{abcd[i]} - {question.Answers[randomAnswersOrder[i]].AnswerContent}");
+                if (question.Answers[randomAnswersOrder[i]].IsCorrect)
+                {
+                    correctAnswer = abcd[i];
+                }
+            }
+            return correctAnswer;
         }
 
         private static List<int> ShuffleAnswersOrder()
