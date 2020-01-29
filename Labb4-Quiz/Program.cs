@@ -149,12 +149,8 @@ namespace Labb4_Quiz
 
             foreach (var question in quizContext.Quizzes.ToList().Last().Questions)
             {
-                Console.WriteLine($"\n{question.QuestionContent}");
-
-                List<int> randomAnswersOrder = ShuffleAnswersOrder();
-
-                string correctAnswer = AskQuestion(question, randomAnswersOrder);
-
+                string correctAnswer = AskQuestion(question);
+                
                 int currentScore = 0;
                 Console.Write("What is the correct answer?\nEnter A, B, C or D: ");
                 string usersAnswer = Console.ReadLine().Trim().ToUpper();
@@ -176,7 +172,16 @@ namespace Labb4_Quiz
             }
         }
 
-        private static string AskQuestion(Question question, List<int> randomAnswersOrder)
+        private static string AskQuestion(Question question)
+        {
+            Console.WriteLine($"\n{question.QuestionContent}");
+
+            List<int> randomAnswersOrder = ShuffleAnswersOrder();
+
+            return PrintAnswers(question, randomAnswersOrder);
+        }
+
+        private static string PrintAnswers(Question question, List<int> randomAnswersOrder)
         {
             List<string> abcd = new List<string> { "A", "B", "C", "D" };
             string correctAnswer = string.Empty;
