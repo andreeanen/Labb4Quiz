@@ -139,7 +139,7 @@ namespace Labb4_Quiz
             }
             var numberOfQuizesInDatabase = quizIdList.Count();
 
-            Quiz newQuiz = new Quiz { QuizId = numberOfQuizesInDatabase + 1, Questions = new List<Question>() };  // TODO: Fix QuizId
+            Quiz newQuiz = new Quiz { QuizId = numberOfQuizesInDatabase + 1, Questions = new List<Question>() };
             foreach (var randomQuestion in random10Questions)
             {
                 foreach (var question in quizContext.Questions)
@@ -156,8 +156,6 @@ namespace Labb4_Quiz
             foreach (var question in quizContext.Quizzes.ToList().Last().Questions)
             {
                 string correctAnswer = AskQuestion(question);
-
-                //int currentScore = 0;
                 Console.Write("\nWhat is the correct answer?\nEnter A, B, C or D: ");
                 string usersAnswer = Console.ReadLine().Trim().ToUpper();
                 if (usersAnswer == correctAnswer)
