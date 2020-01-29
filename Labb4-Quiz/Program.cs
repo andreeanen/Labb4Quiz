@@ -153,6 +153,7 @@ namespace Labb4_Quiz
             quizContext.Quizzes.Add(newQuiz);
             quizContext.SaveChanges();
             int score = 0;
+
             foreach (var question in quizContext.Quizzes.ToList().Last().Questions)
             {
                 string correctAnswer = AskQuestion(question);
@@ -286,16 +287,16 @@ namespace Labb4_Quiz
                 "Where in the world would you find a building called the Atomium?",
                 "What is a gooseberry fool?",
                 "In which movie does Katharine Hepburn say to Humphrey Bogart 'Dear, Dear, What is your first name?'?",
-                "Which author has written Il nome della rosa (1980)?",
+                "Which author has written Il nome della rosa in 1980?",
                 "What is the name of Japanese poetry form consisting of 5+7+5 syllables?",
-                "Which author(s) created the book series The Mortal Instruments?",
-                "Who wrote this classic children's fiction novel? Black Beauty (1877)?",
-                "Who wrote this Pulitzer Prize winning or nominated book? The Accidental Tourist?",
-                "Which author(s) created the book series Goosebumps?",
-                "Who is the author of Humboldt's Gift",
-                "Who is the author of Madame Bovary",
-                "What is the capital of American Samoa",
-                "This island Lolland is part of which country? Lolland",
+                "Which author created the book series The Mortal Instruments?",
+                "Who wrote this classic children's fiction novel Black Beauty in 1877?",
+                "Who wrote this Pulitzer Prize winning or nominated book: The Accidental Tourist?",
+                "Which author created the book series Goosebumps?",
+                "Who is the author of Humboldt's Gift?",
+                "Who is the author of Madame Bovary?",
+                "What is the capital of American Samoa?",
+                "Lolland island is part of which country?",
                 "What is the capital of Ghana?"
             };
 
@@ -323,7 +324,7 @@ namespace Labb4_Quiz
 
             List<string> correctAnswers = new List<string>
             {
-                "George Eliot", "Veterinary", "Gibraltar", " Malta", "The male carries the young", "Chicago", "Jethro Tull", "Brussels Belgium",
+                "George Eliot", "Veterinary", "Gibraltar", "Malta", "The male carries the young", "Chicago", "Jethro Tull", "Brussels Belgium",
                 "A dessert with yoghurt or custard", "The African Queen", "Umberto Eco", "Haiku", "Cassandra Clare", "Anna Sewell", "Anne Tyler",
                 "R.L. Stine", "Saul Bellow", "Gustave Flaubert", "Pago Pago", "South Africa", "Accra"
 
