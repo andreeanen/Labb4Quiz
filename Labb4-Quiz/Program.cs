@@ -62,20 +62,28 @@ namespace Labb4_Quiz
 
         private static void PrintHighScores()
         {
-
+            Console.Clear();
+            Console.WriteLine("Highscores:");
+            foreach (var score in quizContext.Scores.ToList())
+            {
+                Console.WriteLine($"\n\nUser name: {score.UserNamePerQuiz}" +
+                                  $"\nScore: {score.ScorePerQuiz}");
+            }
+            Console.WriteLine("\nPress any key to go back to main menu...");
+            Console.ReadKey();
         }
 
         private static void LogInAsAdmin()
         {
-            Console.WriteLine("Write your admin name:" +
-                              "\nIf you are a new admin then your password is 'password'.");
+            Console.WriteLine("Write your admin name:");
             string adminName = Console.ReadLine().Trim();   // TODO: validate name: no empty strings, no X etc.
             if (adminName == "X" || adminName == "x")
             {
                 Console.WriteLine("Goodbye admin wannabe!");
                 return;
             }
-            Console.WriteLine("Write your admin password:");
+            Console.WriteLine("Write your admin password:" +
+                             "\nObs! If you are a new admin then your password is 'password'.");
             string adminPassword = Console.ReadLine().Trim();
             bool isAdminValid = false;
             foreach (var user in quizContext.Users.ToList())
