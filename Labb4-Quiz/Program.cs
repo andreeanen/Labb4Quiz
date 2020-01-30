@@ -338,9 +338,14 @@ namespace Labb4_Quiz
                 int currentScore = ValidateAnswers(correctAnswer);
                 finalScore += currentScore;
                 //Console.WriteLine("\nCurrent score: " + finalScore);
-                UpdateUsersScore(currentUser, finalScore);
+                //UpdateUsersScore(currentUser, finalScore);
             }
-            Console.WriteLine("\nFinal score: " + finalScore);
+            UpdateUsersScore(currentUser, finalScore);
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("\nCongratuations!!" +
+                              "\nYour final score is: " + finalScore + "\n");
+            Console.ForegroundColor = ConsoleColor.Gray;
+
         }
 
         private static void FilterApprovedQuestions(List<int> questionIdList)
@@ -360,9 +365,21 @@ namespace Labb4_Quiz
 
         private static void UpdateUsersScore(User currentUser, int finalScore)
         {
-            currentUser.Score = finalScore;
+            //currentUser.Points = finalScore;
+            //quizContext.Users.Update(currentUser);
+            //quizContext.SaveChanges();
+
+            currentUser.Scores = new List<Score>();
+            var myCurrentScore = new Score
+            {
+                UserNamePerQuiz = currentUser.Name,
+                ScorePerQuiz = finalScore
+            };
+            currentUser.Scores.Add(myCurrentScore);
+
             quizContext.Users.Update(currentUser);
             quizContext.SaveChanges();
+
         }
 
         private static int ValidateAnswers(string correctAnswer)
@@ -467,8 +484,9 @@ namespace Labb4_Quiz
             {
                 UserId = numberOfUsersInDatabase + 1,
                 Name = userNameInput,
-                Score = 0,
-                UserStatus = UserStatus.User
+                //Points = 0,
+                UserStatus = UserStatus.User,
+                Scores = new List<Score>()
             };
             quizContext.Users.Add(newUser);
             quizContext.SaveChanges();

@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.Collections.Generic;
 
 namespace Labb4_Quiz
 {
@@ -9,10 +9,9 @@ namespace Labb4_Quiz
         public int UserId { get; set; }
         public string Name { get; set; }
         public string Password { get; set; }
-        public int Score { get; set; }
+        //public int Points { get; set; }
+        public virtual IList<Score> Scores { get; set; }
+
         public UserStatus UserStatus { get; set; }
-        //[ForeignKey("QuizId")]
-        //public int QuizId { get; set; }
-        //public virtual Quiz Quiz { get; set; }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Cosmos;
 
 namespace Labb4_Quiz
 {
@@ -21,16 +20,21 @@ namespace Labb4_Quiz
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Question>()
-                .ToContainer("Questions");
+                        .ToContainer("Questions");
 
             modelBuilder.Entity<Answer>()
-                .ToContainer("Answers");
+                        .ToContainer("Answers");
 
             modelBuilder.Entity<Quiz>()
-                .ToContainer("Quizzes");
+                        .ToContainer("Quizzes");
 
             modelBuilder.Entity<User>()
-                .ToContainer("Users");
+                        .ToContainer("Users");
+            modelBuilder.Entity<Score>()
+                        .ToContainer("Scores");
+            modelBuilder.Entity<Score>()
+                        .HasKey(s => s.ScoreId)
+                        .HasName("ScoreId");
         }
         //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         //{
