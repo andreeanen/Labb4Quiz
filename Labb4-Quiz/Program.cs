@@ -10,7 +10,7 @@ namespace Labb4_Quiz
 
         static void Main(string[] args)
         {
-            Console.WriteLine("Add some very nice text for users to read \nin order to prevent them from noticing how long it takes to create the database!");
+            Console.WriteLine("Add some very nice text for users to read \nin order to prevent them from noticing \nhow long it takes to create the database!");
 
             quizContext = new QuizContext();
 
@@ -23,6 +23,7 @@ namespace Labb4_Quiz
             Console.WriteLine("\n\n\nPress any key to proceed...");
             Console.ReadKey(true);
             Console.Clear();
+
             PrintMainMenu();
 
             Console.WriteLine("Press any key to close the application...");
@@ -44,11 +45,9 @@ namespace Labb4_Quiz
                     case "1":
                         User currentUser = StartPageUser();
                         PrintUserMenu(currentUser);
-                        //isInputCorrect = true;
                         break;
                     case "2":
                         LogInAsAdmin();
-                        //isInputCorrect = true;
                         break;
                     case "3":
                         PrintScores();
@@ -158,20 +157,27 @@ namespace Labb4_Quiz
 
         private static void LogInAsAdmin()
         {
-            Console.WriteLine("Write your admin name:");
-            string adminName = Console.ReadLine().Trim();   // TODO: validate name: no empty strings, no X etc.
+            Console.Write("Write your admin name: ");
+            string adminName = Console.ReadLine().Trim();
+            if (adminName == string.Empty)
+            {
+                Console.WriteLine("Invalid input, please try again!");
+                LogInAsAdmin();
+                return;
+            }
             if (adminName == "X" || adminName == "x")
             {
                 Console.WriteLine("Goodbye admin wannabe!");
                 return;
             }
-            Console.WriteLine("Write your admin password:" +
-                             "\nObs! If you are a new admin then your password is 'password'.");
+            Console.Write("Write your admin password!" +
+                          "\nObs! If you are a new admin then your password is 'password'\n" +
+                          "Enter your password: ");
             string adminPassword = Console.ReadLine().Trim();
             bool isAdminValid = false;
             foreach (var user in quizContext.Users.ToList())
             {
-                if ((user.Name == adminName) & (user.Password == adminPassword) & (user.UserStatus == UserStatus.Admin))
+                if ((user.UserStatus == UserStatus.Admin) && (user.Name == adminName) && (user.Password == adminPassword))
                 {
                     isAdminValid = true;
                     break;
@@ -221,7 +227,7 @@ namespace Labb4_Quiz
                 if (user.UserStatus == UserStatus.User)
                 {
                     Console.WriteLine($"\nTo upgrade this user: {user.Name} write yes." +
-                                      $"\nOtherwise write any key and press enter to continue.");
+                                      $"\nOtherwise press enter to continue.");
                     string approval = Console.ReadLine().Trim().ToLower();
                     if (approval == "yes" || approval == "y")
                     {
@@ -277,8 +283,7 @@ namespace Labb4_Quiz
         private static void PrintUserMenu(User currentUser)
         {
             List<int> questionIdList = new List<int>();
-            //bool isInputValid = false;
-            while (true/*!isInputValid*/)
+            while (true)
             {
                 Console.WriteLine("Choose what you would like to do by typing the number in front of the option." +
                                   "\n1. Play a quiz" +
@@ -289,11 +294,9 @@ namespace Labb4_Quiz
                 {
                     case "1":
                         PlayQuiz(currentUser, questionIdList);
-                        //isInputValid = true;
                         break;
                     case "2":
                         AddNewQuestionFromUser(questionIdList);
-                        //isInputValid = true;
                         break;
                     case "3":
                         return;
@@ -306,28 +309,31 @@ namespace Labb4_Quiz
 
         private static void AddNewQuestionFromUser(List<int> questionIdList)
         {
-            Console.WriteLine("Please type the content of your question and then press enter." +
-                              "\nQuestion:");
-            string questionContent = Console.ReadLine().Trim(' ');
-            Console.WriteLine("Please type the correct answer for the question you wrote before." +
-                              "\nCorrect answer:");
+            Console.Write("Please type the content of your question and then press enter." +
+                           "\nQuestion: ");
+            string questionContent = Console.ReadLine().Trim();
+            while (questionContent.Length < 5)     // TODO: What is a reasonable minimum length?
+            {
+                Console.Write("Invalid input. Minimum question length is 5.\nPlease try again: ");
+                questionContent = Console.ReadLine().Trim();
+            }
+
+            Console.Write("Please type the correct answer for the question you wrote before." +
+                           "\nCorrect answer: ");
             string correctAnswer = Console.ReadLine().Trim();
+            while (correctAnswer.Length < 1)
+            {
+                Console.Write("Invalid input. Minimum length is 1.\nPlease try again: ");
+                correctAnswer = Console.ReadLine().Trim();
+            }
+
             bool isWrongAnswersStringCorrect = false;
             while (!isWrongAnswersStringCorrect)
             {
-                Console.WriteLine("Please type 3 wrong answers for your question and divide them by comma (,)." +
-                              "\nWrong answers:");
-                string wrongAnswers = Console.ReadLine().Trim(' ');
+                Console.Write("Please type 3 different wrong answers for your question and divide them by comma (,)." +
+                              "\nWrong answers: ");
+                string wrongAnswers = Console.ReadLine().Trim();
                 var splitAnswers = wrongAnswers.Split(",");
-
-                //if (questionIdList.Count > 0)
-                //{
-                //    questionIdList.Clear();
-                //}
-                //foreach (var question in quizContext.Questions)
-                //{
-                //    questionIdList.Add(question.QuestionId);
-                //}
 
                 int lastId = 0;
                 foreach (var question in quizContext.Questions)
@@ -338,7 +344,13 @@ namespace Labb4_Quiz
                     }
                 }
 
-                if ((splitAnswers.Length == 3) && (correctAnswer != splitAnswers[0].Trim()) && (correctAnswer != splitAnswers[1].Trim()) && (correctAnswer != splitAnswers[2].Trim()))
+                if ((splitAnswers.Length == 3) && 
+                    (correctAnswer != splitAnswers[0].Trim()) && 
+                    (correctAnswer != splitAnswers[1].Trim()) && 
+                    (correctAnswer != splitAnswers[2].Trim()) &&
+                    (splitAnswers[0].Trim() != splitAnswers[1].Trim()) &&
+                    (splitAnswers[0].Trim() != splitAnswers[2].Trim()) &&
+                    (splitAnswers[1].Trim() != splitAnswers[2].Trim()))
                 {
                     isWrongAnswersStringCorrect = true;
                     var newQuestionsFromUser = new Question
@@ -348,43 +360,21 @@ namespace Labb4_Quiz
                         QuestionContent = questionContent,
                         Answers = new List<Answer>
                         {
-                        new Answer { AnswerId = 4 * lastId + 1, AnswerContent = correctAnswer, IsCorrect = true },
-                        new Answer { AnswerId = 4 * lastId + 2, AnswerContent = splitAnswers[0], IsCorrect = false },
-                        new Answer { AnswerId = 4 * lastId + 3, AnswerContent = splitAnswers[1], IsCorrect = false },
-                        new Answer { AnswerId = 4 * lastId + 4, AnswerContent = splitAnswers[2], IsCorrect = false },
+                            new Answer { AnswerId = 4 * lastId + 1, AnswerContent = correctAnswer, IsCorrect = true },
+                            new Answer { AnswerId = 4 * lastId + 2, AnswerContent = splitAnswers[0], IsCorrect = false },
+                            new Answer { AnswerId = 4 * lastId + 3, AnswerContent = splitAnswers[1], IsCorrect = false },
+                            new Answer { AnswerId = 4 * lastId + 4, AnswerContent = splitAnswers[2], IsCorrect = false },
                         }
 
                     };
                     quizContext.Questions.Add(newQuestionsFromUser);
                     quizContext.SaveChanges();
-                    Console.WriteLine("Your question was submited and an administrator will publish it.");
-
-                    //var numberOfQuestionInDatabase = questionIdList.Count();
-                    //if ((splitAnswers.Length == 3) && (correctAnswer != splitAnswers[0].Trim()) && (correctAnswer != splitAnswers[1].Trim()) && (correctAnswer != splitAnswers[2].Trim()))
-                    //{
-                    //    isWrongAnswersStringCorrect = true;
-                    //    var newQuestionsFromUser = new Question
-                    //    {
-                    //        QuestionId = numberOfQuestionInDatabase + 1,
-                    //        IsApproved = false,
-                    //        QuestionContent = questionContent,
-                    //        Answers = new List<Answer>
-                    //        {
-                    //        new Answer { AnswerId = 4 * numberOfQuestionInDatabase + 1, AnswerContent = correctAnswer, IsCorrect = true },
-                    //        new Answer { AnswerId = 4 * numberOfQuestionInDatabase + 2, AnswerContent = splitAnswers[0], IsCorrect = false },
-                    //        new Answer { AnswerId = 4 * numberOfQuestionInDatabase + 3, AnswerContent = splitAnswers[1], IsCorrect = false },
-                    //        new Answer { AnswerId = 4 * numberOfQuestionInDatabase + 4, AnswerContent = splitAnswers[2], IsCorrect = false },
-                    //        }
-
-                    //    };
-                    //    quizContext.Questions.Add(newQuestionsFromUser);
-                    //    quizContext.SaveChanges();
-                    //    Console.WriteLine("Your question was submited and an administrator will publish it.");
+                    Console.WriteLine("\nYour question has been submitted and will be published once it has been reviewed and approved by an administrator.");
                 }
                 else
                 {
-                    Console.WriteLine("You need to write 3 wrong answers divided by comma (,) that are different from the corect answer." +
-                                      "\nPlease try again..");
+                    Console.WriteLine("\nInvalid input!\nYou need to write 3 wrong answers divided by comma (,) that are different from another and from the corect answer." +
+                                      "\nPlease try again...");
                 }
             }
         }
@@ -437,8 +427,6 @@ namespace Labb4_Quiz
                 string correctAnswer = AskQuestion(question);
                 int currentScore = ValidateAnswers(correctAnswer);
                 finalScore += currentScore;
-                //Console.WriteLine("\nCurrent score: " + finalScore);
-                //UpdateUsersScore(currentUser, finalScore);
             }
             UpdateUsersScore(currentUser, finalScore);
             Console.ForegroundColor = ConsoleColor.Yellow;
@@ -493,12 +481,18 @@ namespace Labb4_Quiz
                 Console.ForegroundColor = ConsoleColor.Gray;
                 return 1;
             }
-            else
+            else if (usersAnswer == "A" || usersAnswer == "B" || usersAnswer == "C" || usersAnswer == "D")
             {
                 Console.ForegroundColor = ConsoleColor.DarkRed;
                 Console.WriteLine("\nIncorrect answer...");
                 Console.ForegroundColor = ConsoleColor.Gray;
                 Console.WriteLine("The correct answer was: " + correctAnswer);
+                return 0;
+            }
+            else
+            {
+                Console.WriteLine("Invalid answer. Read the instruction carefully and try again.");
+                ValidateAnswers(correctAnswer);
                 return 0;
             }
         }
@@ -572,7 +566,12 @@ namespace Labb4_Quiz
         {
             Console.Write("\n\nWelcome to play the best quiz of the year!" +
                           "\nPlease enter your username:");
-            string userNameInput = Console.ReadLine();
+            string userNameInput = Console.ReadLine().Trim();
+            while (userNameInput == string.Empty)
+            {
+                Console.Write("Invalid input. Please try again: ");
+                userNameInput = Console.ReadLine().Trim();
+            }
             List<int> userIdList = new List<int>();
             foreach (var item in quizContext.Users)
             {
