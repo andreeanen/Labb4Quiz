@@ -91,28 +91,46 @@ namespace Labb4_Quiz
             Console.WriteLine("\nType username:");
             string userNameInput = Console.ReadLine();
 
-            if (UserNameExists(userNameInput))
+            if (!UsernameExists(userNameInput))
+            {
+                Console.WriteLine($"User '{userNameInput}' not found.");
+            }
+            else if (!UserHasScore(userNameInput))
+            {
+                Console.WriteLine($"No scores were recorded for '{userNameInput}'");
+            }
+            else
             {
                 foreach (var score in quizContext.Scores.ToList().OrderByDescending(s => s.ScorePerQuiz).Where(s => s.UserNamePerQuiz == userNameInput))
                 {
                     Console.WriteLine($"\nName: {score.UserNamePerQuiz} Score: {score.ScorePerQuiz}");
                 }
             }
-            else
-            {
-                Console.WriteLine($"No records for {userNameInput}.");
-            }
             
             Console.WriteLine("\n\nPress any key to go back to previous menu..");
             Console.ReadKey();
-
         }
 
-        private static bool UserNameExists(string specifiedUserName)
+        private static bool UserHasScore(string userNameInput)
         {
             foreach (var user in quizContext.Users.ToList())
             {
-                if (user.Name == specifiedUserName) return true;
+                if (user.Name == userNameInput && user.UserStatus == UserStatus.User && user.Scores.Count > 0 )
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private static bool UsernameExists(string specifiedUserName)
+        {
+            foreach (var user in quizContext.Users.ToList())
+            {
+                if (user.Name == specifiedUserName)
+                {
+                    return true;
+                }
             }
             return false;
         }
