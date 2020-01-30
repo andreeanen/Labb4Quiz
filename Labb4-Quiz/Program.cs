@@ -58,7 +58,8 @@ namespace Labb4_Quiz
 
         private static void LogInAsAdmin()
         {
-            Console.WriteLine("Write your admin name:");
+            Console.WriteLine("Write your admin name:" +
+                              "\nIf you are a new admin then your password is 'password'.");
             string adminName = Console.ReadLine().Trim();   // TODO: validate name: no empty strings, no X etc.
             if (adminName == "X" || adminName == "x")
             {
@@ -125,6 +126,7 @@ namespace Labb4_Quiz
                     if (approval == "yes" || approval == "y")
                     {
                         user.UserStatus = UserStatus.Admin;
+                        user.Password = "password";
                         quizContext.Users.Update(user);
                         quizContext.SaveChanges();
                     }
@@ -548,6 +550,36 @@ namespace Labb4_Quiz
                 };
                 quizContext.Questions.Add(question);
                 quizContext.SaveChanges();
+                //var i = 0;
+                //List<Question> questionss = new List<Question>
+                //{
+                //    new Question
+                //    {
+                //        QuestionId = i++,//genereraidmetod,
+                //        QuestionContent = "Hur många dagar på ett år?",
+                //        Answers = new List<Answer>
+                //        {
+                //            new Answer { AnswerId = 4 * i + 1, AnswerContent = "365", IsCorrect = true },
+                //            new Answer { AnswerId = 4 * i + 2, AnswerContent = "fel", IsCorrect = false },
+                //            new Answer { AnswerId = 4 * i + 3, AnswerContent = "fek", IsCorrect = false },
+                //            new Answer { AnswerId = 4 * i + 4, AnswerContent = "asdfasdf", IsCorrect = false },
+                //        },
+                //        IsApproved = true
+                //    },
+                //    new Question
+                //    {
+                //        QuestionId = i++,//genereraidmetod,
+                //        QuestionContent = "Hur många dagar på ett år?",
+                //        Answers = new List<Answer>
+                //        {
+                //            new Answer { AnswerId = 4 * i + 1, AnswerContent = "365", IsCorrect = true },
+                //            new Answer { AnswerId = 4 * i + 2, AnswerContent = "fel", IsCorrect = false },
+                //            new Answer { AnswerId = 4 * i + 3, AnswerContent = "fek", IsCorrect = false },
+                //            new Answer { AnswerId = 4 * i + 4, AnswerContent = "asdfasdf", IsCorrect = false },
+                //        },
+                //        IsApproved = true
+                //    }
+                //};
             }
 
         }
