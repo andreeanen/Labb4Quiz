@@ -12,15 +12,12 @@ namespace Labb4_Quiz
         {
             quizContext = new QuizContext();
 
-            quizContext.Database.EnsureDeleted();
-            quizContext.Database.EnsureCreated();
-
-            RegisterAdmins();
-            LoadQuestions();
+            if (quizContext.Database.EnsureCreated())
+            {
+                RegisterAdmins();
+                LoadQuestions();
+            }
             PrintMainMenu();
-
-            //User currentUser = StartPage();
-            //PrintMenu(currentUser);
 
             Console.WriteLine("Press any key to close the application...");
             Console.ReadKey(true);
@@ -28,14 +25,13 @@ namespace Labb4_Quiz
 
         private static void PrintMainMenu()
         {
-            //bool isInputCorrect = false;
-            while (true/*!isInputCorrect*/)
+            while (true)
             {
                 Console.WriteLine("Hello!\nChoose one option by typing the number in front of it:" +
-                                              "\n1. Log in as a user" +
-                                              "\n2. Log in as an admin" +
-                                              "\n3. Show scores" +
-                                              "\n4. Exit application");
+                                  "\n1. Log in as a user" +
+                                  "\n2. Log in as an admin" +
+                                  "\n3. Show scores" +
+                                  "\n4. Exit application");
                 string input = Console.ReadLine().Trim();
                 switch (input)
                 {
@@ -65,9 +61,9 @@ namespace Labb4_Quiz
             while (true)
             {
                 Console.WriteLine("Choose one option by typing the number in front of it: " +
-                                              "\n1. Show all scores" +
-                                              "\n2. Show scores from a user" +
-                                              "\n3. Go back to main menu");
+                                  "\n1. Show all scores" +
+                                  "\n2. Show scores from a user" +
+                                  "\n3. Go back to main menu");
                 string input = Console.ReadLine().Trim();
                 switch (input)
                 {
