@@ -34,7 +34,8 @@ namespace Labb4_Quiz
                 Console.WriteLine("Hello!\nChoose one option by typing the number in front of it:" +
                                               "\n1. Log in as a user" +
                                               "\n2. Log in as an admin" +
-                                              "\n3. Exit application");
+                                              "\n3. Show highscores" +
+                                              "\n4. Exit application");
                 string input = Console.ReadLine().Trim();
                 switch (input)
                 {
@@ -48,12 +49,20 @@ namespace Labb4_Quiz
                         //isInputCorrect = true;
                         break;
                     case "3":
+                        PrintHighScores();
+                        break;
+                    case "4":
                         return;
                     default:
                         Console.WriteLine("Your input is incorrect. Please choose one option by writing the number in front of it.");
                         break;
                 }
             }
+        }
+
+        private static void PrintHighScores()
+        {
+
         }
 
         private static void LogInAsAdmin()
