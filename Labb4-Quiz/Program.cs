@@ -7,9 +7,11 @@ namespace Labb4_Quiz
     class Program
     {
         static QuizContext quizContext;
-        //static List<int> questionIdList = new List<int>();
+
         static void Main(string[] args)
         {
+            Console.WriteLine("Add some very nice text for users to read \nin order to prevent them from noticing how long it takes to create the database!");
+
             quizContext = new QuizContext();
 
             if (quizContext.Database.EnsureCreated())
@@ -17,6 +19,10 @@ namespace Labb4_Quiz
                 RegisterAdmins();
                 LoadQuestions();
             }
+
+            Console.WriteLine("\n\n\nPress any key to proceed...");
+            Console.ReadKey(true);
+            Console.Clear();
             PrintMainMenu();
 
             Console.WriteLine("Press any key to close the application...");
@@ -27,7 +33,7 @@ namespace Labb4_Quiz
         {
             while (true)
             {
-                Console.WriteLine("Hello!\nChoose one option by typing the number in front of it:" +
+                Console.WriteLine("Hello!\n\nChoose one option by typing the number in front of it:" +
                                   "\n1. Log in as a user" +
                                   "\n2. Log in as an admin" +
                                   "\n3. Show scores" +
@@ -60,7 +66,7 @@ namespace Labb4_Quiz
         {
             while (true)
             {
-                Console.WriteLine("Choose one option by typing the number in front of it: " +
+                Console.WriteLine("\n\nChoose one option by typing the number in front of it: " +
                                   "\n1. Show all scores" +
                                   "\n2. Show scores from a user" +
                                   "\n3. Go back to main menu");
@@ -84,16 +90,23 @@ namespace Labb4_Quiz
 
         private static void ShowUserScore()
         {
-            Console.WriteLine("\nType username:");
-            string userNameInput = Console.ReadLine();
+            Console.Write("\nType username: ");
+            
+            string userNameInput = Console.ReadLine().Trim();
 
-            if (!UsernameExists(userNameInput))
+            if (userNameInput == string.Empty)
+            {
+                Console.WriteLine("Invalid input, please try again!");
+                ShowUserScore();
+                return;
+            }
+            else if (!UsernameExists(userNameInput))
             {
                 Console.WriteLine($"User '{userNameInput}' not found.");
             }
             else if (!UserHasScore(userNameInput))
             {
-                Console.WriteLine($"No scores were recorded for '{userNameInput}'");
+                Console.WriteLine($"No scores were recorded for '{userNameInput}'.");
             }
             else
             {
@@ -104,7 +117,7 @@ namespace Labb4_Quiz
             }
             
             Console.WriteLine("\n\nPress any key to go back to previous menu..");
-            Console.ReadKey();
+            Console.ReadKey(true);
         }
 
         private static bool UserHasScore(string userNameInput)
@@ -179,10 +192,10 @@ namespace Labb4_Quiz
         {
             while (true)
             {
-                Console.WriteLine("Hello!\nChoose one option by typing the number in front of it:" +
-                                              "\n1. Review not approved questions added by users" +
-                                              "\n2. Upgrade an user to admin" +
-                                              "\n3. Return to main menu");
+                Console.WriteLine("Hello!\n\nChoose one option by typing the number in front of it:" +
+                                  "\n1. Review not approved questions added by users" +
+                                  "\n2. Upgrade an user to admin" +
+                                  "\n3. Return to main menu");
                 string input = Console.ReadLine().Trim();
                 switch (input)
                 {
@@ -378,7 +391,7 @@ namespace Labb4_Quiz
 
         private static void PlayQuiz(User currentUser, List<int> questionIdList)
         {
-            Console.WriteLine("The quiz starts right now. Good luck!");
+            Console.WriteLine("\n\nThe quiz starts right now. Good luck!");
 
             FilterApprovedQuestions(questionIdList);
 
@@ -471,7 +484,7 @@ namespace Labb4_Quiz
 
         private static int ValidateAnswers(string correctAnswer)
         {
-            Console.Write("What is the correct answer?\nEnter A, B, C or D: ");
+            Console.Write("\nWhat is the correct answer?\nEnter A, B, C or D: ");
             string usersAnswer = Console.ReadLine().Trim().ToUpper();
             if (usersAnswer == correctAnswer)
             {
@@ -485,7 +498,7 @@ namespace Labb4_Quiz
                 Console.ForegroundColor = ConsoleColor.DarkRed;
                 Console.WriteLine("\nIncorrect answer...");
                 Console.ForegroundColor = ConsoleColor.Gray;
-                Console.WriteLine("The correct answer is:" + correctAnswer);
+                Console.WriteLine("The correct answer was: " + correctAnswer);
                 return 0;
             }
         }
@@ -557,8 +570,8 @@ namespace Labb4_Quiz
 
         private static User StartPageUser()
         {
-            Console.WriteLine("Welcome to play the best quiz of the year!" +
-                              "\nPlease enter your username:");
+            Console.Write("\n\nWelcome to play the best quiz of the year!" +
+                          "\nPlease enter your username:");
             string userNameInput = Console.ReadLine();
             List<int> userIdList = new List<int>();
             foreach (var item in quizContext.Users)
