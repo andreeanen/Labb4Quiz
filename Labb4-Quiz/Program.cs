@@ -34,6 +34,7 @@ namespace Labb4_Quiz
         {
             while (true)
             {
+                Console.Clear();
                 Console.WriteLine("Hello!\n\nChoose one option by typing the number in front of it:" +
                                   "\n1. Log in as a user" +
                                   "\n2. Log in as an admin" +
@@ -281,10 +282,11 @@ namespace Labb4_Quiz
         }
 
         private static void PrintUserMenu(User currentUser)
-        {
+        {            
             List<int> questionIdList = new List<int>();
             while (true)
             {
+                Console.Clear();
                 Console.WriteLine("Choose what you would like to do by typing the number in front of the option." +
                                   "\n1. Play a quiz" +
                                   "\n2. Add a new question to the quiz" +
@@ -381,6 +383,7 @@ namespace Labb4_Quiz
 
         private static void PlayQuiz(User currentUser, List<int> questionIdList)
         {
+            Console.Clear();
             Console.WriteLine("\n\nThe quiz starts right now. Good luck!");
 
             FilterApprovedQuestions(questionIdList);
@@ -429,11 +432,13 @@ namespace Labb4_Quiz
                 finalScore += currentScore;
             }
             UpdateUsersScore(currentUser, finalScore);
+            Console.Clear();
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("\nCongratuations!!" +
                               "\nYour final score is: " + finalScore + "\n");
             Console.ForegroundColor = ConsoleColor.Gray;
-
+            Console.WriteLine("\n\n\nPress any key to return to previous menu...");
+            Console.ReadKey(true);
         }
 
         private static void FilterApprovedQuestions(List<int> questionIdList)
@@ -479,6 +484,8 @@ namespace Labb4_Quiz
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine("\nCorrect answer!!");
                 Console.ForegroundColor = ConsoleColor.Gray;
+                Console.WriteLine("\n\n\nPress any key to proceed...");
+                Console.ReadKey(true);
                 return 1;
             }
             else if (usersAnswer == "A" || usersAnswer == "B" || usersAnswer == "C" || usersAnswer == "D")
@@ -487,6 +494,8 @@ namespace Labb4_Quiz
                 Console.WriteLine("\nIncorrect answer...");
                 Console.ForegroundColor = ConsoleColor.Gray;
                 Console.WriteLine("The correct answer was: " + correctAnswer);
+                Console.WriteLine("\n\n\nPress any key to proceed...");
+                Console.ReadKey(true);
                 return 0;
             }
             else
@@ -494,11 +503,12 @@ namespace Labb4_Quiz
                 Console.WriteLine("Invalid answer. Read the instruction carefully and try again.");
                 ValidateAnswers(correctAnswer);
                 return 0;
-            }
+            }            
         }
 
         private static string AskQuestion(Question question)
         {
+            Console.Clear();
             Console.WriteLine($"\n{question.QuestionContent}");
 
             List<int> randomAnswersOrder = ShuffleAnswersOrder();
