@@ -34,7 +34,7 @@ namespace Labb4_Quiz
                 Console.WriteLine("Hello!\nChoose one option by typing the number in front of it:" +
                                               "\n1. Log in as a user" +
                                               "\n2. Log in as an admin" +
-                                              "\n3. Show highscores" +
+                                              "\n3. Show scores" +
                                               "\n4. Exit application");
                 string input = Console.ReadLine().Trim();
                 switch (input)
@@ -49,7 +49,7 @@ namespace Labb4_Quiz
                         //isInputCorrect = true;
                         break;
                     case "3":
-                        PrintHighScores();
+                        PrintScores();
                         break;
                     case "4":
                         return;
@@ -60,16 +60,54 @@ namespace Labb4_Quiz
             }
         }
 
-        private static void PrintHighScores()
+        private static void PrintScores()
+        {
+            while (true)
+            {
+                Console.WriteLine("Choose one option by typing the number in front of it: " +
+                                              "\n1. Show all scores" +
+                                              "\n2. Show scores from a user" +
+                                              "\n3. Go back to main menu");
+                string input = Console.ReadLine().Trim();
+                switch (input)
+                {
+                    case "1":
+                        ShowAllScores();
+                        break;
+                    case "2":
+                        ShowUserScore();
+                        break;
+                    case "3":
+                        return;
+                    default:
+                        Console.WriteLine("Your input is incorrect. Please try again..");
+                        break;
+                }
+            }
+        }
+
+        private static void ShowUserScore()
+        {
+            Console.WriteLine("\nType username:");
+            string userNameInput = Console.ReadLine();
+            foreach (var score in quizContext.Scores.ToList().OrderByDescending(s => s.ScorePerQuiz).Where(s => s.UserNamePerQuiz == userNameInput))
+            {
+                Console.WriteLine($"\nName: {score.UserNamePerQuiz} Score: {score.ScorePerQuiz}");
+            }
+            Console.WriteLine("\n\nPress any key to go back to previous menu..");
+            Console.ReadKey();
+
+        }
+
+        private static void ShowAllScores()
         {
             Console.Clear();
-            Console.WriteLine("Highscores:");
-            foreach (var score in quizContext.Scores.ToList())
+            Console.WriteLine("Highscores:\n");
+            foreach (var score in quizContext.Scores.ToList().OrderByDescending(s => s.ScorePerQuiz).ThenBy(s => s.UserNamePerQuiz))
             {
-                Console.WriteLine($"\n\nUser name: {score.UserNamePerQuiz}" +
-                                  $"\nScore: {score.ScorePerQuiz}");
+                Console.WriteLine($"\nName: {score.UserNamePerQuiz} Score: {score.ScorePerQuiz}");
             }
-            Console.WriteLine("\nPress any key to go back to main menu...");
+            Console.WriteLine("\nPress any key to go back to previous menu...");
             Console.ReadKey();
         }
 
