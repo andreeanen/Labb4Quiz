@@ -10,8 +10,10 @@ namespace Labb4_Quiz
 
         static void Main(string[] args)
         {
-            Console.WriteLine("Add some very nice text for users to read \nin order to prevent them from noticing \nhow long it takes to create the database!");
-
+            Console.WriteLine("Hello!!" +
+                  "\nWelcome to play the best quiz of the year!" +
+                  "\nThis is gonna be a fun way to test your general knowledge and learn new intresting facts!" +
+                  "\nEnjoy!!");
             quizContext = new QuizContext();
 
             if (quizContext.Database.EnsureCreated())
@@ -35,7 +37,7 @@ namespace Labb4_Quiz
             while (true)
             {
                 Console.Clear();
-                Console.WriteLine("Hello!\n\nChoose one option by typing the number in front of it:" +
+                Console.WriteLine("Choose one option by typing the number in front of it:" +
                                   "\n1. Log in as a user" +
                                   "\n2. Log in as an admin" +
                                   "\n3. Show scores" +
@@ -91,7 +93,7 @@ namespace Labb4_Quiz
         private static void ShowUserScore()
         {
             Console.Write("\nType username: ");
-            
+
             string userNameInput = Console.ReadLine().Trim();
 
             if (userNameInput == string.Empty)
@@ -115,7 +117,7 @@ namespace Labb4_Quiz
                     Console.WriteLine($"\nName: {score.UserNamePerQuiz} Score: {score.ScorePerQuiz}");
                 }
             }
-            
+
             Console.WriteLine("\n\nPress any key to go back to previous menu..");
             Console.ReadKey(true);
         }
@@ -124,7 +126,7 @@ namespace Labb4_Quiz
         {
             foreach (var user in quizContext.Users.ToList())
             {
-                if (user.Name == userNameInput && user.UserStatus == UserStatus.User && user.Scores.Count > 0 )
+                if (user.Name == userNameInput && user.UserStatus == UserStatus.User && user.Scores.Count > 0)
                 {
                     return true;
                 }
@@ -282,7 +284,7 @@ namespace Labb4_Quiz
         }
 
         private static void PrintUserMenu(User currentUser)
-        {            
+        {
             List<int> questionIdList = new List<int>();
             while (true)
             {
@@ -314,7 +316,7 @@ namespace Labb4_Quiz
             Console.Write("Please type the content of your question and then press enter." +
                            "\nQuestion: ");
             string questionContent = Console.ReadLine().Trim();
-            while (questionContent.Length < 5)     // TODO: What is a reasonable minimum length?
+            while (questionContent.Length < 5)
             {
                 Console.Write("Invalid input. Minimum question length is 5.\nPlease try again: ");
                 questionContent = Console.ReadLine().Trim();
@@ -346,9 +348,9 @@ namespace Labb4_Quiz
                     }
                 }
 
-                if ((splitAnswers.Length == 3) && 
-                    (correctAnswer != splitAnswers[0].Trim()) && 
-                    (correctAnswer != splitAnswers[1].Trim()) && 
+                if ((splitAnswers.Length == 3) &&
+                    (correctAnswer != splitAnswers[0].Trim()) &&
+                    (correctAnswer != splitAnswers[1].Trim()) &&
                     (correctAnswer != splitAnswers[2].Trim()) &&
                     (splitAnswers[0].Trim() != splitAnswers[1].Trim()) &&
                     (splitAnswers[0].Trim() != splitAnswers[2].Trim()) &&
@@ -367,11 +369,12 @@ namespace Labb4_Quiz
                             new Answer { AnswerId = 4 * lastId + 3, AnswerContent = splitAnswers[1], IsCorrect = false },
                             new Answer { AnswerId = 4 * lastId + 4, AnswerContent = splitAnswers[2], IsCorrect = false },
                         }
-
                     };
                     quizContext.Questions.Add(newQuestionsFromUser);
                     quizContext.SaveChanges();
                     Console.WriteLine("\nYour question has been submitted and will be published once it has been reviewed and approved by an administrator.");
+                    Console.WriteLine("\n\nPress any key to go back to previous menu..");
+                    Console.ReadKey(true);
                 }
                 else
                 {
@@ -458,10 +461,6 @@ namespace Labb4_Quiz
 
         private static void UpdateUsersScore(User currentUser, int finalScore)
         {
-            //currentUser.Points = finalScore;
-            //quizContext.Users.Update(currentUser);
-            //quizContext.SaveChanges();
-
             currentUser.Scores = new List<Score>();
             var myCurrentScore = new Score
             {
@@ -472,7 +471,6 @@ namespace Labb4_Quiz
 
             quizContext.Users.Update(currentUser);
             quizContext.SaveChanges();
-
         }
 
         private static int ValidateAnswers(string correctAnswer)
@@ -503,7 +501,7 @@ namespace Labb4_Quiz
                 Console.WriteLine("Invalid answer. Read the instruction carefully and try again.");
                 ValidateAnswers(correctAnswer);
                 return 0;
-            }            
+            }
         }
 
         private static string AskQuestion(Question question)
@@ -574,8 +572,7 @@ namespace Labb4_Quiz
 
         private static User StartPageUser()
         {
-            Console.Write("\n\nWelcome to play the best quiz of the year!" +
-                          "\nPlease enter your username:");
+            Console.Write("\n\nPlease enter your username:");
             string userNameInput = Console.ReadLine().Trim();
             while (userNameInput == string.Empty)
             {
@@ -593,7 +590,6 @@ namespace Labb4_Quiz
             {
                 UserId = numberOfUsersInDatabase + 1,
                 Name = userNameInput,
-                //Points = 0,
                 UserStatus = UserStatus.User,
                 Scores = new List<Score>()
             };

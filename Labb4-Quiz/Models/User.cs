@@ -9,9 +9,7 @@ namespace Labb4_Quiz
         public int UserId { get; set; }
         public string Name { get; set; }
         public string Password { get; set; }
-        //public int Points { get; set; }
         public virtual IList<Score> Scores { get; set; }
-
         public UserStatus UserStatus { get; set; }
     }
 }

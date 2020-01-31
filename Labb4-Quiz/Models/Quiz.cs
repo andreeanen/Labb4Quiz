@@ -8,6 +8,5 @@ namespace Labb4_Quiz
         [Key]
         public int QuizId { get; set; }
         public virtual IList<Question> Questions { get; set; }
-        //public virtual User User { get; set; }
     }
 }

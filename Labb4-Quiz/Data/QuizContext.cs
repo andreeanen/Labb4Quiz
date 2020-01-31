@@ -37,10 +37,5 @@ namespace Labb4_Quiz
                         .HasKey(s => s.ScoreId)
                         .HasName("ScoreId");
         }
-        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        //{
-        //    optionsBuilder.UseSqlServer(@"Data Source=localhost;Initial Catalog=LeQuizzzz;Integrated Security=True;Pooling=False");
-        //    optionsBuilder.UseLazyLoadingProxies();
-        //}
     }
 }

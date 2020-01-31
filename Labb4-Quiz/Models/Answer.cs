@@ -11,7 +11,6 @@ namespace Labb4_Quiz
         public bool IsCorrect { get; set; }
         [ForeignKey("QuestionId")]
         public int QuestionId { get; set; }
-
         public virtual Question Question { get; set; }
 
     }

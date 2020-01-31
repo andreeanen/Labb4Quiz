@@ -8,7 +8,6 @@ namespace Labb4_Quiz
         [Key]
         public Guid ScoreId { get; }
         public int ScorePerQuiz { get; set; }
-
         public string UserNamePerQuiz { get; set; }
         public virtual User User { get; set; }
     }
