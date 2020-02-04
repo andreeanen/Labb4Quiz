@@ -605,8 +605,6 @@ namespace Labb4_Quiz
 
         private static User StartPageUser()
         {
-            List<int> userIdList = new List<int>();            
-
             Console.Write("\n\nPlease enter your username: ");
             string userNameInput = Console.ReadLine().Trim();
             while (userNameInput == string.Empty)
@@ -615,11 +613,7 @@ namespace Labb4_Quiz
                 userNameInput = Console.ReadLine().Trim();
             }
             
-            foreach (var item in quizContext.Users)
-            {
-                userIdList.Add(item.UserId);
-            }
-            var numberOfUsersInDatabase = userIdList.Count();
+            var numberOfUsersInDatabase = quizContext.Users.Count();
 
             var newUser = new User
             {
