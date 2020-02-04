@@ -413,7 +413,7 @@ namespace Labb4_Quiz
 
         private static void PlayQuiz(User currentUser)
         {
-            int numberOfQuestions = 10;
+            int numberOfQuestions = CustomizeNumberOfQuestions();
             int finalScore = 0;
 
             Console.Clear();
@@ -463,6 +463,23 @@ namespace Labb4_Quiz
             Console.ForegroundColor = ConsoleColor.Gray;
             Console.WriteLine("\n\n\nPress any key to return to previous menu...");
             Console.ReadKey(true);
+        }
+
+        private static int CustomizeNumberOfQuestions()
+        {
+            Console.WriteLine("Define number of questions (from 1 to 20): ");
+            int numberOfQuestions;
+            bool parsed = int.TryParse(Console.ReadLine(), out numberOfQuestions);
+            if (parsed && numberOfQuestions >= 1 && numberOfQuestions <= 20)
+            {
+                return numberOfQuestions;
+            }
+            else
+            {
+                Console.WriteLine("Invalid input, please try again!");
+                CustomizeNumberOfQuestions();
+            }
+            return 0;
         }
 
         private static List<int> FilterApprovedQuestions()
