@@ -326,7 +326,7 @@ namespace Labb4_Quiz
                         PlayQuiz(currentUser, questionIdList);
                         break;
                     case "2":
-                        AddNewQuestionFromUser(questionIdList);
+                        AddNewQuestionFromUser();
                         break;
                     case "3":
                         return;
@@ -337,7 +337,7 @@ namespace Labb4_Quiz
             }
         }
 
-        private static void AddNewQuestionFromUser(List<int> questionIdList)
+        private static void AddNewQuestionFromUser()
         {
             bool isWrongAnswersStringCorrect = false;
 
