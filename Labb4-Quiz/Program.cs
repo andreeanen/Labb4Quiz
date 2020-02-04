@@ -311,7 +311,6 @@ namespace Labb4_Quiz
 
         private static void PrintUserMenu(User currentUser)
         {
-            List<int> questionIdList = new List<int>();
             while (true)
             {
                 Console.Clear();
@@ -323,7 +322,7 @@ namespace Labb4_Quiz
                 switch (userInput)
                 {
                     case "1":
-                        PlayQuiz(currentUser, questionIdList);
+                        PlayQuiz(currentUser);
                         break;
                     case "2":
                         AddNewQuestionFromUser();
@@ -412,26 +411,25 @@ namespace Labb4_Quiz
             }
         }
 
-        private static void PlayQuiz(User currentUser, List<int> questionIdList)
+        private static void PlayQuiz(User currentUser)
         {
             int numberOfQuestions = 10;
-            List<int> quizIdList = new List<int>();
             int finalScore = 0;
 
             Console.Clear();
             Console.WriteLine("\n\nThe quiz starts right now. Good luck!\n\n\nPress any key to continue...");
             Console.ReadKey(true);           
 
-            FilterApprovedQuestions(questionIdList);
+            var approvedQuestions = FilterApprovedQuestions();
             
             Random random = new Random();
-            List<int> random10Questions = new List<int>();
+            List<int> randomizedQuestionsIds = new List<int>();
             for (int i = 0; i < numberOfQuestions; i++)
             {
-                int randomId = random.Next(1, questionIdList.Count + 1);
-                if (!random10Questions.Contains(randomId))
+                int randomId = random.Next(1, approvedQuestions.Count + 1);
+                if (!randomizedQuestionsIds.Contains(randomId))
                 {
-                    random10Questions.Add(randomId);
+                    randomizedQuestionsIds.Add(randomId);
                 }
                 else
                 {
@@ -439,22 +437,14 @@ namespace Labb4_Quiz
                 }
             }
            
-            foreach (var quiz in quizContext.Quizzes)
-            {
-                quizIdList.Add(quiz.QuizId);
-            }
-            var numberOfQuizesInDatabase = quizIdList.Count();
+            var numberOfQuizesInDatabase = quizContext.Quizzes.Count();
 
             Quiz newQuiz = new Quiz { QuizId = numberOfQuizesInDatabase + 1, Questions = new List<Question>() };
-            foreach (var randomQuestion in random10Questions)
+
+            foreach (var randomizedQuestionId in randomizedQuestionsIds)
             {
-                foreach (var question in quizContext.Questions)
-                {
-                    if (question.QuestionId == randomQuestion)
-                    {
-                        newQuiz.Questions.Add(question);
-                    }
-                }
+                var question = quizContext.Questions.Where(q => q.QuestionId == randomizedQuestionId).FirstOrDefault();
+                newQuiz.Questions.Add(question);
             }
             quizContext.Quizzes.Add(newQuiz);
             quizContext.SaveChanges();           
@@ -475,19 +465,12 @@ namespace Labb4_Quiz
             Console.ReadKey(true);
         }
 
-        private static void FilterApprovedQuestions(List<int> questionIdList)
+        private static List<int> FilterApprovedQuestions()
         {
-            if (questionIdList.Count > 0)
-            {
-                questionIdList.Clear();
-            }
-            foreach (var question in quizContext.Questions)
-            {
-                if (question.IsApproved)
-                {
-                    questionIdList.Add(question.QuestionId);
-                }
-            }
+            List<int> approvedQuestionsIds = quizContext.Questions.Where(q => q.IsApproved == true)
+                                                                  .Select(q => q.QuestionId)
+                                                                  .ToList();
+            return approvedQuestionsIds;
         }
 
         private static void UpdateUsersScore(User currentUser, int finalScore)
