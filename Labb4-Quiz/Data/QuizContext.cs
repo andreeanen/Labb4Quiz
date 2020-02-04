@@ -31,8 +31,10 @@ namespace Labb4_Quiz
 
             modelBuilder.Entity<User>()
                         .ToContainer("Users");
+
             modelBuilder.Entity<Score>()
                         .ToContainer("Scores");
+
             modelBuilder.Entity<Score>()
                         .HasKey(s => s.ScoreId)
                         .HasName("ScoreId");

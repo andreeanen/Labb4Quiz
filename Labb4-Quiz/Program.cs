@@ -29,7 +29,7 @@ namespace Labb4_Quiz
 
             PrintMainMenu();
 
-            Console.WriteLine("Press any key to close the application...");
+            Console.WriteLine("\n\n\nPress any key to close the application...");
             Console.ReadKey(true);
         }
 
@@ -71,6 +71,7 @@ namespace Labb4_Quiz
         {
             while (true)
             {
+                Console.Clear();
                 Console.WriteLine("\nChoose one option by typing the number in front of it: " +
                                   "\n1. Show all scores" +
                                   "\n2. Show scores from a user" +
@@ -165,16 +166,15 @@ namespace Labb4_Quiz
 
         private static void LogInAsAdmin()
         {
-            bool isAdminValid = false;
             Console.Write("\nWrite your admin name: ");
-            string adminName = Console.ReadLine().Trim();
-            if (adminName == string.Empty)
+            string inputName = Console.ReadLine().Trim();
+            if (inputName == string.Empty)
             {
                 Console.WriteLine("\nInvalid input, please try again!");
                 LogInAsAdmin();
                 return;
             }
-            if (adminName == "X" || adminName == "x")
+            if (inputName == "X" || inputName == "x")
             {
                 Console.WriteLine("\nGoodbye admin wannabe!");
                 return;
@@ -182,23 +182,15 @@ namespace Labb4_Quiz
             Console.Write("\nWrite your admin password!" +
                           "\nObs! If you are a new admin then your password is 'password'\n" +
                           "Enter your password: ");
-            string adminPassword = Console.ReadLine().Trim();
-           
-            foreach (var user in quizContext.Users.ToList())
-            {
-                if ((user.UserStatus == UserStatus.Admin) && (user.Name == adminName) && (user.Password == adminPassword))
-                {
-                    isAdminValid = true;
-                    break;
-                }
-            }
-            if (isAdminValid)
+            string inputPassword = Console.ReadLine().Trim();
+
+            if (quizContext.Users.Where(u => u.Name == inputName && u.Password == inputPassword).Count() > 0)
             {
                 PrintAdminMenu();
             }
             else
             {
-                Console.WriteLine("\nYour admin name or password are incorrect.\nTry again or press X to exit!");
+                Console.WriteLine("\nYour admin name or password are incorrect.\n\nTry again or press X to exit!");
                 LogInAsAdmin();
             }
         }
@@ -207,6 +199,7 @@ namespace Labb4_Quiz
         {
             while (true)
             {
+                Console.Clear();
                 Console.WriteLine("\nChoose one option by typing the number in front of it:" +
                                   "\n1. Review not approved questions added by users" +
                                   "\n2. Upgrade an user to admin" +
@@ -231,10 +224,12 @@ namespace Labb4_Quiz
 
         private static void UpgradeUser()
         {
+            int count = 0;
             foreach (var user in quizContext.Users)
             {
                 if (user.UserStatus == UserStatus.User)
                 {
+                    count++;
                     Console.WriteLine($"\nTo upgrade this user: {user.Name} write yes." +
                                       $"\nOtherwise press enter to continue.");
                     string approval = Console.ReadLine().Trim().ToLower();
@@ -247,6 +242,12 @@ namespace Labb4_Quiz
                         Console.WriteLine($"This user: {user.Name} has been upgraded to admin.");
                     }
                 }
+            }
+            if (count == 0)
+            {
+                Console.WriteLine("\nThere are no users that can be upgraded.\n\n\n" +
+                                  "Press any key to return to the previous menu.");
+                Console.ReadKey(true);
             }
         }
 
@@ -295,7 +296,9 @@ namespace Labb4_Quiz
             }
             if (counter == 0)
             {
-                Console.WriteLine("\nThere is no question to be reviewed.");
+                Console.WriteLine("\nThere is no question to be reviewed.\n\n\n" +
+                                  "Press any key to return to the previous menu.");
+                Console.ReadKey(true);
             }
         }
 
@@ -333,7 +336,7 @@ namespace Labb4_Quiz
 
             Console.Clear();
             Console.Write("Please type the content of your question and then press enter." +
-                          "\nQuestion: ");
+                          "\n\nQuestion: ");
             string questionContent = Console.ReadLine().Trim();
             while (questionContent.Length < 5)
             {
@@ -342,7 +345,7 @@ namespace Labb4_Quiz
             }
 
             Console.Write("\nPlease type the correct answer for the question you wrote before." +
-                           "\nCorrect answer: ");
+                           "\n\nCorrect answer: ");
             string correctAnswer = Console.ReadLine().Trim();
             while (correctAnswer.Length < 1)
             {
@@ -383,9 +386,9 @@ namespace Labb4_Quiz
                         Answers = new List<Answer>
                         {
                             new Answer { AnswerId = 4 * lastId + 1, AnswerContent = correctAnswer, IsCorrect = true },
-                            new Answer { AnswerId = 4 * lastId + 2, AnswerContent = splitAnswers[0], IsCorrect = false },
-                            new Answer { AnswerId = 4 * lastId + 3, AnswerContent = splitAnswers[1], IsCorrect = false },
-                            new Answer { AnswerId = 4 * lastId + 4, AnswerContent = splitAnswers[2], IsCorrect = false },
+                            new Answer { AnswerId = 4 * lastId + 2, AnswerContent = splitAnswers[0].Trim(), IsCorrect = false },
+                            new Answer { AnswerId = 4 * lastId + 3, AnswerContent = splitAnswers[1].Trim(), IsCorrect = false },
+                            new Answer { AnswerId = 4 * lastId + 4, AnswerContent = splitAnswers[2].Trim(), IsCorrect = false },
                         }
                     };
                     quizContext.Questions.Add(newQuestionsFromUser);
@@ -520,7 +523,7 @@ namespace Labb4_Quiz
             }
             else
             {
-                Console.WriteLine("Invalid answer. Read the instruction carefully and try again.");
+                Console.WriteLine("\nInvalid answer. Read the instruction carefully and try again.");
                 ValidateAnswers(correctAnswer);
                 return 0;
             }
