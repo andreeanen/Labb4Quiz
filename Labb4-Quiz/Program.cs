@@ -152,13 +152,20 @@ namespace Labb4_Quiz
 
         private static void ShowAllScores()
         {
-            Console.Clear();
-            Console.WriteLine("Highscores:\n");
-            foreach (var score in quizContext.Scores.ToList().
-                                                     OrderByDescending(s => s.ScorePerQuiz).
-                                                     ThenBy(s => s.UserNamePerQuiz))
+            if (quizContext.Scores.ToList().Count > 0)
             {
-                Console.WriteLine($"\nName: {score.UserNamePerQuiz, -20} Score: {score.ScorePerQuiz}");
+                Console.Clear();
+                Console.WriteLine("Highscores:\n");
+                foreach (var score in quizContext.Scores.ToList().
+                                                         OrderByDescending(s => s.ScorePerQuiz).
+                                                         ThenBy(s => s.UserNamePerQuiz))
+                {
+                    Console.WriteLine($"\nName:{score.UserNamePerQuiz,-20} Score:{score.ScorePerQuiz}");
+                }
+            }
+            else
+            {
+                Console.WriteLine("No scores were recorded yet.");
             }
             Console.WriteLine("\nPress any key to go back to previous menu...");
             Console.ReadKey();
