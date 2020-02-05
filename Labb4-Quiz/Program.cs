@@ -338,7 +338,7 @@ namespace Labb4_Quiz
 
         private static void AddNewQuestionFromUser()
         {
-            bool isWrongAnswersStringCorrect = false;
+            bool invalidInputFormat = true;
 
             Console.Clear();
             Console.Write("Please type the content of your question and then press enter." +
@@ -359,21 +359,14 @@ namespace Labb4_Quiz
                 correctAnswer = Console.ReadLine().Trim();
             }
             
-            while (!isWrongAnswersStringCorrect)
+            while (invalidInputFormat)
             {
                 Console.Write("\nPlease type 3 different wrong answers for your question and divide them by comma (,)." +
                               "\nWrong answers: ");
                 string wrongAnswers = Console.ReadLine().Trim();
                 var splitAnswers = wrongAnswers.Split(",");
 
-                int lastId = 0;
-                foreach (var question in quizContext.Questions)
-                {
-                    if (question.QuestionId > lastId)
-                    {
-                        lastId = question.QuestionId;
-                    }
-                }
+                int lastId = quizContext.Questions.ToList().Max(q => q.QuestionId);
 
                 if ((splitAnswers.Length == 3) &&
                     (correctAnswer != splitAnswers[0].Trim()) &&
@@ -383,7 +376,7 @@ namespace Labb4_Quiz
                     (splitAnswers[0].Trim() != splitAnswers[2].Trim()) &&
                     (splitAnswers[1].Trim() != splitAnswers[2].Trim()))
                 {
-                    isWrongAnswersStringCorrect = true;
+                    invalidInputFormat = false;
                     var newQuestionsFromUser = new Question
                     {
                         QuestionId = lastId + 1,
@@ -456,6 +449,7 @@ namespace Labb4_Quiz
                 finalScore += currentScore;
             }
             UpdateUsersScore(currentUser, finalScore);
+
             Console.Clear();
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("\nCongratuations!!" +
@@ -493,12 +487,12 @@ namespace Labb4_Quiz
         private static void UpdateUsersScore(User currentUser, int finalScore)
         {
             currentUser.Scores = new List<Score>();
-            var myCurrentScore = new Score
+            var currentScore = new Score
             {
                 UserNamePerQuiz = currentUser.Name,
                 ScorePerQuiz = finalScore
             };
-            currentUser.Scores.Add(myCurrentScore);
+            currentUser.Scores.Add(currentScore);
 
             quizContext.Users.Update(currentUser);
             quizContext.SaveChanges();
@@ -566,7 +560,7 @@ namespace Labb4_Quiz
         {
             List<int> randomAnswersOrder = new List<int>();
             Random random = new Random();
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < 4; i++)     // 4 is for 4 answers per question
             {
                 int randomAnswerIndex = random.Next(0, 4);
                 if (!randomAnswersOrder.Contains(randomAnswerIndex))
