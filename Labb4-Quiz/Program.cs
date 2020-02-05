@@ -118,7 +118,7 @@ namespace Labb4_Quiz
             {
                 foreach (var score in quizContext.Scores.ToList().OrderByDescending(s => s.ScorePerQuiz).Where(s => s.UserNamePerQuiz == userNameInput))
                 {
-                    Console.WriteLine($"\nName: {score.UserNamePerQuiz, -20} Score: {score.ScorePerQuiz}");
+                    Console.WriteLine($"\nName: {score.UserNamePerQuiz,-20} Score: {score.ScorePerQuiz}");
                 }
             }
 
@@ -130,7 +130,7 @@ namespace Labb4_Quiz
         {
             foreach (var user in quizContext.Users.ToList())
             {
-                if (user.Name == userNameInput && user.UserStatus == UserStatus.User && user.Scores.Count > 0)
+                if ((user.Name == userNameInput) && (user.Scores.Count > 0))
                 {
                     return true;
                 }
@@ -358,7 +358,7 @@ namespace Labb4_Quiz
                 Console.Write("\nInvalid input. Minimum length is 1.\nPlease try again: ");
                 correctAnswer = Console.ReadLine().Trim();
             }
-            
+
             while (invalidInputFormat)
             {
                 Console.Write("\nPlease type 3 different wrong answers for your question and divide them by comma (,)." +
@@ -411,10 +411,10 @@ namespace Labb4_Quiz
 
             Console.Clear();
             Console.WriteLine("\n\nThe quiz starts right now. Good luck!\n\n\nPress any key to continue...");
-            Console.ReadKey(true);           
+            Console.ReadKey(true);
 
             var approvedQuestions = FilterApprovedQuestions();
-            
+
             Random random = new Random();
             List<int> randomizedQuestionsIds = new List<int>();
             for (int i = 0; i < numberOfQuestions; i++)
@@ -429,7 +429,7 @@ namespace Labb4_Quiz
                     i--;
                 }
             }
-           
+
             var numberOfQuizesInDatabase = quizContext.Quizzes.Count();
 
             Quiz newQuiz = new Quiz { QuizId = numberOfQuizesInDatabase + 1, Questions = new List<Question>() };
@@ -440,7 +440,7 @@ namespace Labb4_Quiz
                 newQuiz.Questions.Add(question);
             }
             quizContext.Quizzes.Add(newQuiz);
-            quizContext.SaveChanges();           
+            quizContext.SaveChanges();
 
             foreach (var question in quizContext.Quizzes.ToList().Last().Questions)
             {
@@ -461,7 +461,8 @@ namespace Labb4_Quiz
 
         private static int CustomizeNumberOfQuestions()
         {
-            Console.WriteLine("Define number of questions (from 1 to 20): ");
+            Console.WriteLine("\nWrite how many questions you want the quiz to include." +
+                              "\nObs! It has to be a number from 1 to 20: ");
             int numberOfQuestions;
             bool parsed = int.TryParse(Console.ReadLine(), out numberOfQuestions);
             if (parsed && numberOfQuestions >= 1 && numberOfQuestions <= 20)
@@ -606,7 +607,7 @@ namespace Labb4_Quiz
                 Console.Write("Invalid input. Please try again: ");
                 userNameInput = Console.ReadLine().Trim();
             }
-            
+
             var numberOfUsersInDatabase = quizContext.Users.Count();
 
             var newUser = new User
